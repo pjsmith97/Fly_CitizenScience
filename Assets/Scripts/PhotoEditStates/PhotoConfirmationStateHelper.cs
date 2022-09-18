@@ -25,6 +25,7 @@ public class PhotoConfirmationStateHelper : MonoBehaviour
 
     public string decisionText;
     public TextMeshProUGUI decisionTextUI;
+    public TextMeshProUGUI headerTextUI;
 
     public float timerVal;
 
@@ -52,10 +53,11 @@ public class PhotoConfirmationStateHelper : MonoBehaviour
             i++;
         }
 
-        buttonIndex = 0;
+        buttonIndex = 1;
 
         confirmationButtonUI.SetActive(false);
         decisionTextUI.gameObject.SetActive(false);
+        headerTextUI.gameObject.SetActive(false);
         confirmationPanelUI.SetActive(false);
     }
 

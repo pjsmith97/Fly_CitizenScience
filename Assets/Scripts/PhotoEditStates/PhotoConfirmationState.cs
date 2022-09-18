@@ -12,11 +12,11 @@ public class PhotoConfirmationState : PhotoAnalysisState
 
         photoAnalysis.decisionStateHelper.player.controllers.maps.SetMapsEnabled(true, "PhotoDecision");
 
-        EventSystem.current.SetSelectedGameObject(null);
-        EventSystem.current.SetSelectedGameObject(
-            photoAnalysis.confirmationStateHelper.uiButtonGameObjects[photoAnalysis.confirmationStateHelper.buttonIndex]);
-
         photoAnalysis.confirmationStateHelper.confirmationPanelUI.SetActive(true);
+
+        /*EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(
+            photoAnalysis.confirmationStateHelper.uiButtonGameObjects[photoAnalysis.confirmationStateHelper.buttonIndex]);*/
 
         photoAnalysis.confirmationStateHelper.SetDecisionText(
             photoAnalysis.decisionStateHelper.textIndexOptions[photoAnalysis.decisionStateHelper.buttonIndex].GetComponent<TextMeshProUGUI>().text);
@@ -67,8 +67,11 @@ public class PhotoConfirmationState : PhotoAnalysisState
     {
         base.Exit();
 
+        EventSystem.current.SetSelectedGameObject(null);
+
         photoAnalysis.confirmationStateHelper.confirmationPanelUI.SetActive(false);
         photoAnalysis.confirmationStateHelper.confirmationButtonUI.SetActive(false);
         photoAnalysis.confirmationStateHelper.decisionTextUI.gameObject.SetActive(false);
+        photoAnalysis.confirmationStateHelper.headerTextUI.gameObject.SetActive(false);
     }
 }

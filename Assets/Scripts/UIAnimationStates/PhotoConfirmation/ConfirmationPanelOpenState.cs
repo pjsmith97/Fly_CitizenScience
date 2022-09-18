@@ -12,6 +12,8 @@ public class ConfirmationPanelOpenState : ConfirmationUIAnimationState
         confirmationHelper.panelGrowthTimer = 0;
         confirmationHelper.uiAlphaTimer = 0;
 
+        confirmationHelper.buttonIndex = 1;
+
         var tempColor = confirmationHelper.confirmationPanelUI.GetComponent<Image>().color;
         tempColor.a = 0;
         confirmationHelper.confirmationPanelUI.GetComponent<Image>().color = tempColor;

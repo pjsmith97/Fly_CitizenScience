@@ -11,6 +11,7 @@ public class ConfirmationChoosingState : ConfirmationUIAnimationState
 
         confirmationHelper.confirmationButtonUI.SetActive(true);
         confirmationHelper.decisionTextUI.gameObject.SetActive(true);
+        confirmationHelper.headerTextUI.gameObject.SetActive(true);
 
         EventSystem.current.SetSelectedGameObject(null);
         EventSystem.current.SetSelectedGameObject(confirmationHelper.uiButtonGameObjects[confirmationHelper.buttonIndex]);
@@ -77,5 +78,12 @@ public class ConfirmationChoosingState : ConfirmationUIAnimationState
         {
             confirmationHelper.incrementTimer = 1;
         }
+    }
+
+    public override void Exit()
+    {
+        base.Exit();
+
+        
     }
 }
