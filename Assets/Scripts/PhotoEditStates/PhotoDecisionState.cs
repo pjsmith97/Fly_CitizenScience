@@ -38,7 +38,7 @@ public class PhotoDecisionState : PhotoAnalysisState
             photoAnalysis.decisionStateHelper.buttonOptions[photoAnalysis.decisionStateHelper.buttonIndexOptions[photoAnalysis.decisionStateHelper.buttonIndex]]);
 
         // Set Panel Title
-        photoAnalysis.SetPanelTitle("Decision Options");
+        photoAnalysis.SetPanelTitle("Decision Mode");
     }
 
     public override void Update()

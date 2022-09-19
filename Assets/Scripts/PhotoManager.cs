@@ -18,7 +18,7 @@ public class PhotoManager : MonoBehaviour
     private dynamic requestApiBody;
     private dynamic postApiBody;
     private string apiGameName = "dev-pjsmith997-yahoo-com";
-    public string playerCode = "player00";
+    public string playerCode /*= "player00"*/;
     public string playerGroup = "playergroup";
 
     // Start is called before the first frame update
@@ -91,7 +91,7 @@ public class PhotoManager : MonoBehaviour
             {
                 while ((int)responseBody["task"]["difficulty"] > 3 || currentTaskID == (int)responseBody["task"]["id"])
                 {
-                    response = await sessionApi.V2.Players.CreateTask("player00", requestApiBody);
+                    response = await sessionApi.V2.Players.CreateTask(playerCode, requestApiBody);
                     responseBody = response["body"];
                 }
             }
@@ -101,7 +101,7 @@ public class PhotoManager : MonoBehaviour
                 Debug.Log("No Difficulty");
                 while (currentTaskID == (int)responseBody["task"]["id"])
                 {
-                    response = await sessionApi.V2.Players.CreateTask("player00", requestApiBody);
+                    response = await sessionApi.V2.Players.CreateTask(playerCode, requestApiBody);
                     responseBody = response["body"];
                 }
             }
