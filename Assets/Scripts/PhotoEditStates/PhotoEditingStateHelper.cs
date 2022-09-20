@@ -21,7 +21,7 @@ public class PhotoEditingStateHelper : MonoBehaviour
     public Slider leftSlider;
     public Slider rightSlider;
 
-    [Header("Rotator")]
+    [Header("Rotate slider")]
     public Image rotationGauge;
 
     [Header("Editing UI")]
@@ -50,7 +50,7 @@ public class PhotoEditingStateHelper : MonoBehaviour
     // Update is called once per frame
     public void HelperUpdate()
     {
-        if (player.GetButtonDown("RotateRight"))
+        /*if (player.GetButtonDown("RotateRight"))
         {
             if (rotationGauge.fillAmount == 0)
             {
@@ -73,7 +73,7 @@ public class PhotoEditingStateHelper : MonoBehaviour
             }
 
             flyPhoto.transform.rotation *= Quaternion.Euler(0, 0, 360 * 0.25f);
-        }
+        }*/
 
         if (player.GetButtonDown("Finish"))
         {
@@ -88,6 +88,7 @@ public class PhotoEditingStateHelper : MonoBehaviour
         float leftStickVal = player.GetAxis("LeftSlider");
         float rightStickVal = player.GetAxis("RightSlider");
 
+        // Calculate analog stick input and apply it to the sliders
         if (leftStickVal > 0)
         {
             leftSlideSpeed = Mathf.Lerp(0, maxSlideSpeed, leftStickVal);
@@ -123,6 +124,27 @@ public class PhotoEditingStateHelper : MonoBehaviour
             if (rightSlider.value < slideMin)
             {
                 rightSlider.value = slideMin;
+            }
+        }
+
+        // Check for rotator inputs and apply them to progression bar
+        if (player.GetButton("RotateRight"))
+        {
+            if (rotationGauge.fillAmount == 0)
+            {
+                rotationGauge.fillAmount = 1f;
+            }
+
+            rotationGauge.fillAmount -= maxSlideSpeed * Del;
+        }
+
+        if (player.GetButton("RotateLeft"))
+        {
+            rotationGauge.fillAmount += maxSlideSpeed * Del;
+
+            if (rotationGauge.fillAmount >= 1)
+            {
+                rotationGauge.fillAmount -= 1;
             }
         }
     }

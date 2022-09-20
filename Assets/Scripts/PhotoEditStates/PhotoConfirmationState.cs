@@ -38,12 +38,12 @@ public class PhotoConfirmationState : PhotoAnalysisState
             var sendTask = photoAnalysis.confirmationStateHelper.photoManager.SendAndGetSpiPollInfo(
                 photoAnalysis.decisionStateHelper.buttonIndexOptions[photoAnalysis.decisionStateHelper.buttonIndex], 
                 (int)photoAnalysis.confirmationStateHelper.timerVal);
-            //var newTask = photoAnalysis.confirmationStateHelper.photoManager.GetSpiPollInfo();
             
             photoAnalysis.confirmationStateHelper.distortionManager.CreateBalancers();
             
             photoAnalysis.editingStateHelper.leftSlider.value = 0;
             photoAnalysis.editingStateHelper.rightSlider.value = 0;
+            photoAnalysis.editingStateHelper.rotationGauge.fillAmount = 0;
 
             photoAnalysis.editingStateHelper.player.controllers.maps.SetMapsEnabled(false, "PhotoDecision");
 
