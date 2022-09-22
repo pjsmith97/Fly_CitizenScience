@@ -29,4 +29,24 @@ public class CameraLensManager : MonoBehaviour
             cameraLens.gameObject.SetActive(false);
         }
      }
+
+    public GameObject CheckObstruction(Vector3 flyPos)
+    {
+        //Create a ray pointing at fly
+        Vector3 rayStart = transform.position;
+        Vector3 rayDir = flyPos - rayStart;
+        Ray ray = new Ray(rayStart, rayDir);
+
+        // Cast the ray at the fly
+        RaycastHit hitInfo = new RaycastHit();
+        
+        if(Physics.Raycast(ray, out hitInfo))
+        {
+            return hitInfo.transform.gameObject;
+        }
+        else
+        {
+            return null;
+        }
+    }
 }

@@ -8,6 +8,7 @@ public class FlyDetectionManager : MonoBehaviour
 {
     [SerializeField] private GameObject PlayerCharacter;
     [SerializeField] private Image cameraLens;
+    [SerializeField] private CameraLensManager lensManager;
     [SerializeField] private int playerID = 0;
     [SerializeField] private Player RewiredPlayer;
     private Camera mainCamera;
@@ -31,11 +32,30 @@ public class FlyDetectionManager : MonoBehaviour
         {
             Vector3 viewPos = mainCamera.WorldToViewportPoint(transform.position);
 
-            if (viewPos.x >= 0.4 && viewPos.x <= 0.6 && viewPos.y >= 0.4 && viewPos.y <= 0.6 && viewPos.z < 15)
+            if (viewPos.x >= 0.4 && viewPos.x <= 0.6 && viewPos.y >= 0.4 && viewPos.y <= 0.6)
             {
-                thisRenderer.material.SetColor("_Color", Color.cyan);
-                cameraLens.color = new Vector4(cameraLens.color.r, 255, cameraLens.color.b, cameraLens.color.a);
-                Debug.Log("You see me!!!");
+                if (lensManager.CheckObstruction(transform.position) == this.gameObject)
+                {
+                    if (viewPos.z < 15)
+                    {
+                        thisRenderer.material.SetColor("_Color", Color.cyan);
+                        cameraLens.color = new Vector4(cameraLens.color.r, 255, cameraLens.color.b, cameraLens.color.a);
+                        Debug.Log("You see me!!!");
+                    }
+                    else
+                    {
+
+                    }
+                }
+
+                else if (thisRenderer.material.color == Color.cyan)
+                {
+                    thisRenderer.material.SetColor("_Color", Color.white);
+                    cameraLens.color = new Vector4(cameraLens.color.r, oldColorG, cameraLens.color.b, cameraLens.color.a);
+                    Debug.Log("I'm hidden ;)");
+                }
+
+
             }
 
             else if (thisRenderer.material.color == Color.cyan)

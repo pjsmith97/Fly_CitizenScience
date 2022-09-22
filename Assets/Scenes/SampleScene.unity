@@ -1218,6 +1218,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerCharacter: {fileID: 459003982}
   cameraLens: {fileID: 2101937581}
+  lensManager: {fileID: 459003988}
   playerID: 0
 --- !u!1 &1224125942
 GameObject:

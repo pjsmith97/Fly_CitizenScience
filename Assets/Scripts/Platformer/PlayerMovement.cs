@@ -110,6 +110,11 @@ public class PlayerMovement : MonoBehaviour
             Rgbody.useGravity = true;
         }
 
+        if(CurrentState != PlayerStates.ledgeGrab)
+        {
+            Rgbody.freezeRotation = false;
+        }
+
         if (CurrentState == PlayerStates.grounded)
         {
             // check for jump
@@ -515,6 +520,7 @@ public class PlayerMovement : MonoBehaviour
         LedgePos = ledgePos;
         OriginPos = transform.position;
         Rgbody.velocity = Vector3.zero;
+        Rgbody.freezeRotation = true;
         PullUpTimer = 0;
     }
 
