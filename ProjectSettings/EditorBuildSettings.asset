@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/PhotoAnalysisTutorial.unity
+    guid: 004d61f8ecf3fa8489704ae053237112
+  - enabled: 1
+    path: Assets/Scenes/PhotoAnalysis.unity
+    guid: fc28eb252c2c13542b7278a370608d96
   m_configObjects: {}

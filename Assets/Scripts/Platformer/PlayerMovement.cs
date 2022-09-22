@@ -105,6 +105,11 @@ public class PlayerMovement : MonoBehaviour
         /*float CamX = player.GetAxis("Camera Horizontal");
         float CamY = player.GetAxis("Camera Vertical");*/
 
+        if(CurrentState != PlayerStates.onWall)
+        {
+            Rgbody.useGravity = true;
+        }
+
         if (CurrentState == PlayerStates.grounded)
         {
             // check for jump
@@ -485,8 +490,6 @@ public class PlayerMovement : MonoBehaviour
         WallDirection = WallDirection.normalized;
 
         bool wallExists = Collision.CheckWalls(WallDirection);
-        
-        //Debug.Log("Wall Detction: " + wallExists);
 
         return wallExists;
     }
@@ -496,11 +499,6 @@ public class PlayerMovement : MonoBehaviour
         AirborneTimer = 0;
         CurrentState = PlayerStates.airborne;
     }
-
-/*    private void TakeFlight()
-    {
-        CurrentState = PlayerStates.flying;
-    }*/
 
     private void OnGround()
     {
@@ -516,6 +514,7 @@ public class PlayerMovement : MonoBehaviour
 
         LedgePos = ledgePos;
         OriginPos = transform.position;
+        Rgbody.velocity = Vector3.zero;
         PullUpTimer = 0;
     }
 
@@ -530,5 +529,6 @@ public class PlayerMovement : MonoBehaviour
     private void WallRun()
     {
         CurrentState = PlayerStates.onWall;
+        Rgbody.useGravity = false;
     }
 }

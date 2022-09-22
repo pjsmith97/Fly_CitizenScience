@@ -1,16 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Rewired;
 
-public class TimeScaleManager : MonoBehaviour
+public class CameraLensManager : MonoBehaviour
 {
-
     [SerializeField] private int playerID = 0;
     [SerializeField] private Player player;
 
-    [SerializeField] private float slowMoScale;
-
+    [SerializeField] private Image cameraLens;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,14 +21,12 @@ public class TimeScaleManager : MonoBehaviour
     {
         if (player.GetButton("Aim"))
         {
-            Time.timeScale = slowMoScale;
-            Time.fixedDeltaTime = 0.02f * Time.timeScale;
+            cameraLens.gameObject.SetActive(true);
         }
 
         else if (player.GetButtonUp("Aim"))
         {
-            Time.timeScale = 1f;
-            Time.fixedDeltaTime = 0.02f * Time.timeScale;
+            cameraLens.gameObject.SetActive(false);
         }
-    }
+     }
 }
