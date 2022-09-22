@@ -15,7 +15,7 @@ using UnityEngine;
 
 public abstract class PhotoCheckTutorialUIState
 {
-    private TutorialPanelManager tutorialManager;
+    protected TutorialPanelManager tutorialManager;
 
     public virtual void Enter(TutorialPanelManager tutorial)
     {
