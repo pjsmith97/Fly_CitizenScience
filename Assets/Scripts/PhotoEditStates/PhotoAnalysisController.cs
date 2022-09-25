@@ -16,11 +16,17 @@ public class PhotoAnalysisController : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI panelTitle;
 
+    public int completedPhotos;
+
+    public string nextSceneName;
+
     // Start is called before the first frame update
     void Start()
     {
         /*player.controllers.maps.SetMapsEnabled(true, "PhotoAnalysis");
         player.controllers.maps.SetMapsEnabled(false, "Default");*/
+
+        completedPhotos = 0;
 
         editingStateHelper = GetComponent<PhotoEditingStateHelper>();
 

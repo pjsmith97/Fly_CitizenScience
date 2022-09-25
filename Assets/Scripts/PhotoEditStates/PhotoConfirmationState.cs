@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class PhotoConfirmationState : PhotoAnalysisState
@@ -34,20 +35,36 @@ public class PhotoConfirmationState : PhotoAnalysisState
         if (photoAnalysis.confirmationStateHelper.done)
         {
             photoAnalysis.confirmationStateHelper.done = false;
-            
-            var sendTask = photoAnalysis.confirmationStateHelper.photoManager.SendAndGetSpiPollInfo(
-                photoAnalysis.decisionStateHelper.buttonIndexOptions[photoAnalysis.decisionStateHelper.buttonIndex], 
+
+            photoAnalysis.completedPhotos += 1;
+
+            if (FlyScoreManager.flyPhotos == photoAnalysis.completedPhotos)
+            {
+                var sendTask = photoAnalysis.confirmationStateHelper.photoManager.SendSpiPollInfo(
+                photoAnalysis.decisionStateHelper.buttonIndexOptions[photoAnalysis.decisionStateHelper.buttonIndex],
                 (int)photoAnalysis.confirmationStateHelper.timerVal);
-            
-            photoAnalysis.confirmationStateHelper.distortionManager.CreateBalancers();
-            
-            photoAnalysis.editingStateHelper.leftSlider.value = 0;
-            photoAnalysis.editingStateHelper.rightSlider.value = 0;
-            photoAnalysis.editingStateHelper.rotationGauge.fillAmount = 0;
 
-            photoAnalysis.editingStateHelper.player.controllers.maps.SetMapsEnabled(false, "PhotoDecision");
+                FlyScoreManager.flyPhotos = 0;
 
-            photoAnalysis.ChangeState(new PhotoEditingState());
+                SceneManager.LoadSceneAsync(photoAnalysis.nextSceneName);
+            }
+
+            else
+            {
+                var sendAndGetTask = photoAnalysis.confirmationStateHelper.photoManager.SendAndGetSpiPollInfo(
+                photoAnalysis.decisionStateHelper.buttonIndexOptions[photoAnalysis.decisionStateHelper.buttonIndex],
+                (int)photoAnalysis.confirmationStateHelper.timerVal);
+
+                photoAnalysis.confirmationStateHelper.distortionManager.CreateBalancers();
+
+                photoAnalysis.editingStateHelper.leftSlider.value = 0;
+                photoAnalysis.editingStateHelper.rightSlider.value = 0;
+                photoAnalysis.editingStateHelper.rotationGauge.fillAmount = 0;
+
+                photoAnalysis.editingStateHelper.player.controllers.maps.SetMapsEnabled(false, "PhotoDecision");
+
+                photoAnalysis.ChangeState(new PhotoEditingState());
+            }
         }
 
         if (photoAnalysis.confirmationStateHelper.back)

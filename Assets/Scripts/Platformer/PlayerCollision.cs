@@ -113,7 +113,15 @@ public class PlayerCollision : MonoBehaviour
             // Return the normal
             GetComponent<PlayerMovement>().WallNormal = hitInfo.normal;
 
-
+            //Determine if wall is on the right or left
+            if(Vector3.Dot(rayDir, transform.right) >= 0)
+            {
+                GetComponent<PlayerMovement>().CurrentWallRunState = PlayerMovement.WallRunStates.rightWall;
+            }
+            else
+            {
+                GetComponent<PlayerMovement>().CurrentWallRunState = PlayerMovement.WallRunStates.leftWall;
+            }
 
             // there is a wall in front of player
             return true;

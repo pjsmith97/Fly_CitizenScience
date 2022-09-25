@@ -15,7 +15,29 @@ public class PlayerMovement : MonoBehaviour
         ledgeGrab
     }
 
+    public enum GroundStates
+    {
+        idle,
+        slowForward,
+        slowRight,
+        slowLeft,
+        fastForward,
+        fastRight,
+        fastLeft,
+        back
+    }
+
+    public enum WallRunStates
+    {
+        vertical,
+        leftWall,
+        rightWall
+    }
+
     public PlayerStates CurrentState;
+
+    public GroundStates CurrentGroundState;
+    public WallRunStates CurrentWallRunState;
 
     [SerializeField] private int playerID = 0;
     [SerializeField] private Player player;
@@ -74,6 +96,8 @@ public class PlayerMovement : MonoBehaviour
     private float railTransition;
     private bool railCompleted;
 
+    [Header("Animation Bool")]
+    public bool fast;
 
     private PlayerCollision Collision;
     private Rigidbody Rgbody;
@@ -91,6 +115,8 @@ public class PlayerMovement : MonoBehaviour
         player = ReInput.players.GetPlayer(playerID);
 
         AgilityControl = 1;
+
+        fast = false;
     }
 
     // Update is called once per frame
@@ -102,9 +128,8 @@ public class PlayerMovement : MonoBehaviour
         float XMov = player.GetAxis("Horizontal");
         float YMov = player.GetAxis("Vertical");
 
-        /*float CamX = player.GetAxis("Camera Horizontal");
-        float CamY = player.GetAxis("Camera Vertical");*/
 
+        // Reset Rigibody components based on game state
         if(CurrentState != PlayerStates.onWall)
         {
             Rgbody.useGravity = true;
@@ -241,6 +266,7 @@ public class PlayerMovement : MonoBehaviour
 
             //get the magnitude of our inputs
             float inputMag = new Vector2(XMov, YMov).normalized.magnitude;
+
             // get which speed to apply, forward or back?
             float targetSpd = Mathf.Lerp(MovingBackSpeed, MaxSpeed, YMov);
 
@@ -307,7 +333,7 @@ public class PlayerMovement : MonoBehaviour
         else if (CurrentState == PlayerStates.onWall)
         {
             // increment wall run timer
-            WallRunTimer += Del;
+            //WallRunTimer += Del;
 
             TurnPlayer(CamX, Del, TurnSpeedOnWalls);
 
@@ -425,6 +451,84 @@ public class PlayerMovement : MonoBehaviour
         Vector3 LerpVel = Vector3.Lerp(Rgbody.velocity, MoveDir, Accel * delta);
 
         Rgbody.velocity = LerpVel;
+
+        if(CurrentState == PlayerStates.grounded)
+        {
+            CheckGroundState(horizontal, vertical);
+            /*Debug.Log("Ground State: " + CurrentGroundState);
+            Debug.Log("Current Speed: " + CurrentSpeed);*/
+        }
+
+        // Test magnitude of axis
+        //Debug.Log("Horizontal: " + horizontal + ", Vertical: " + vertical);
+    }
+
+    private void CheckGroundState(float horizontal, float vertical)
+    {
+
+        if(Mathf.Abs(horizontal) >= 0.5 || Mathf.Abs(vertical) >= 0.5)
+        {
+            fast = true;
+        }
+
+        else
+        {
+            fast = false;
+        }
+
+        if (Mathf.Abs(horizontal) < 0.05 && Mathf.Abs(vertical) < 0.05)
+        {
+            CurrentGroundState = GroundStates.idle;
+            return;
+        }
+
+        if(vertical > -0.4)
+        {
+            if (Mathf.Abs(horizontal) > Mathf.Abs(vertical))
+            {
+                if (fast)
+                {
+                    if(horizontal > 0)
+                    {
+                        CurrentGroundState = GroundStates.fastRight;
+                    }
+                    else
+                    {
+                        CurrentGroundState = GroundStates.fastLeft;
+                    }
+                }
+                else
+                {
+                    if (horizontal > 0)
+                    {
+                        CurrentGroundState = GroundStates.slowRight;
+                    }
+                    else
+                    {
+                        CurrentGroundState = GroundStates.slowLeft;
+                    }
+                }
+            }
+
+            else
+            {
+                if (fast)
+                {
+                    CurrentGroundState = GroundStates.fastForward;
+                }
+                else
+                {
+                    CurrentGroundState = GroundStates.slowForward;
+                }
+            }
+        }
+
+        else
+        {
+            CurrentGroundState = GroundStates.back;
+        }
+        
+        
     }
 
     private void MovePlayerOnWall(float vertivalMov, float del)
@@ -438,6 +542,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3 lerpAmount = Vector3.Lerp(Rgbody.velocity, MoveDir, WallRunAcceleration * del);
         Rgbody.velocity = lerpAmount;
 
+        Debug.Log("WallRun :" + CurrentWallRunState);
     }
 
     private void MovePlayerOnRail(float del)
@@ -486,10 +591,10 @@ public class PlayerMovement : MonoBehaviour
             return false;
         }
 
-        if(WallRunTimer > MaxWallRunTime)
+        /*if(WallRunTimer > MaxWallRunTime)
         {
             return false;
-        }
+        }*/
 
         Vector3 WallDirection = transform.forward * yVal + transform.right * xVal;
         WallDirection = WallDirection.normalized;
@@ -508,7 +613,7 @@ public class PlayerMovement : MonoBehaviour
     private void OnGround()
     {
         GroundedTimer = 0;
-        WallRunTimer = 0; // When grounded, reset wall run timer
+        //WallRunTimer = 0; // When grounded, reset wall run timer
         tryingToGrab = false;
         CurrentState = PlayerStates.grounded;
     }

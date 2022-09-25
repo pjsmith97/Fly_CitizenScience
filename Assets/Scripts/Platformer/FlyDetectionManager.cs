@@ -6,22 +6,37 @@ using Rewired;
 
 public class FlyDetectionManager : MonoBehaviour
 {
-    [SerializeField] private GameObject PlayerCharacter;
-    [SerializeField] private Image cameraLens;
-    [SerializeField] private CameraLensManager lensManager;
     [SerializeField] private int playerID = 0;
     [SerializeField] private Player RewiredPlayer;
+
+    [Header("Camera")]
+    [SerializeField] private Image cameraLens;
+    [SerializeField] private CameraLensManager lensManager;
+    
+    [Header("Particles")]
+    [SerializeField] private ParticleSystem particles;
+
+    [Header("Score")]
+    [SerializeField] private FlyScoreManager flyCounter;
+
+
+    public bool seen;
+    public bool photoTaken;
     private Camera mainCamera;
-    private Renderer thisRenderer;
+    //private Renderer thisRenderer;
     private float oldColorG;
+    
 
     // Start is called before the first frame update
     void Start()
     {
         RewiredPlayer = ReInput.players.GetPlayer(playerID);
         mainCamera = Camera.main;
-        thisRenderer = GetComponent<Renderer>();
+        //thisRenderer = GetComponent<ParticleSystem>().;
+        particles = this.transform.GetChild(0).gameObject.GetComponent<ParticleSystem>();
         oldColorG = cameraLens.color.g;
+        seen = false;
+        photoTaken = false;
     }
 
     // Update is called once per frame
@@ -36,45 +51,68 @@ public class FlyDetectionManager : MonoBehaviour
             {
                 if (lensManager.CheckObstruction(transform.position) == this.gameObject)
                 {
-                    if (viewPos.z < 15)
+                    if (viewPos.z < 15 && particles.GetComponent<ParticleSystemRenderer>().material.color != Color.cyan && !photoTaken)
                     {
-                        thisRenderer.material.SetColor("_Color", Color.cyan);
-                        cameraLens.color = new Vector4(cameraLens.color.r, 255, cameraLens.color.b, cameraLens.color.a);
+                        seen = true;
                         Debug.Log("You see me!!!");
                     }
-                    else
+                    else if((viewPos.z >= 15 || photoTaken) && particles.GetComponent<ParticleSystemRenderer>().material.color == Color.cyan)
                     {
+                        seen = false;
+                        Debug.Log("I'm hidden ;)");
+                    }
 
+                    else if (particles.GetComponent<ParticleSystemRenderer>().material.color == Color.cyan)
+                    {
+                        if (RewiredPlayer.GetButtonDown("TakePhoto"))
+                        {
+                            Debug.Log("Picture Taken!");
+                            photoTaken = true;
+                            cameraLens.color = new Vector4(cameraLens.color.r, oldColorG, cameraLens.color.b, cameraLens.color.a);
+                            FlyScoreManager.flyPhotos += 1;
+                        }
                     }
                 }
 
-                else if (thisRenderer.material.color == Color.cyan)
+                else if (particles.GetComponent<ParticleSystemRenderer>().material.color == Color.cyan)
                 {
-                    thisRenderer.material.SetColor("_Color", Color.white);
-                    cameraLens.color = new Vector4(cameraLens.color.r, oldColorG, cameraLens.color.b, cameraLens.color.a);
+                    seen = false;
                     Debug.Log("I'm hidden ;)");
                 }
 
 
             }
 
-            else if (thisRenderer.material.color == Color.cyan)
+            else if (particles.GetComponent<ParticleSystemRenderer>().material.color == Color.cyan)
             {
-                thisRenderer.material.SetColor("_Color", Color.white);
-                cameraLens.color = new Vector4(cameraLens.color.r, oldColorG, cameraLens.color.b, cameraLens.color.a);
+                seen = false;
                 Debug.Log("I'm hidden ;)");
             }
         }
 
         else if (RewiredPlayer.GetButtonUp("Aim"))
         {
-            if (thisRenderer.material.color == Color.cyan)
+            if (particles.GetComponent<ParticleSystemRenderer>().material.color == Color.cyan)
             {
-                thisRenderer.material.SetColor("_Color", Color.white);
+                seen = false;
                 cameraLens.color = new Vector4(cameraLens.color.r, oldColorG, cameraLens.color.b, cameraLens.color.a);
                 Debug.Log("No more photos...");
             }
         }
 
+        if (seen)
+        {
+            particles.GetComponent<ParticleSystemRenderer>().material.SetColor("_Color", Color.cyan);
+            cameraLens.color = new Vector4(cameraLens.color.r, 255, cameraLens.color.b, cameraLens.color.a);
+        }
+        else if(particles.GetComponent<ParticleSystemRenderer>().material.color == Color.white && photoTaken)
+        {
+            particles.GetComponent<ParticleSystemRenderer>().material.SetColor("_Color", Color.cyan);
+        }
+        else if(particles.GetComponent<ParticleSystemRenderer>().material.color == Color.cyan && !photoTaken)
+        {
+            particles.GetComponent<ParticleSystemRenderer>().material.SetColor("_Color", Color.white);
+            cameraLens.color = new Vector4(cameraLens.color.r, oldColorG, cameraLens.color.b, cameraLens.color.a);
+        }
     }
 }
