@@ -59,7 +59,7 @@ public class FlyDetectionManager : MonoBehaviour
                     else if((viewPos.z >= 15 || photoTaken) && particles.GetComponent<ParticleSystemRenderer>().material.color == Color.cyan)
                     {
                         seen = false;
-                        Debug.Log("I'm hidden ;)");
+                        //Debug.Log("I'm hidden ;)");
                     }
 
                     else if (particles.GetComponent<ParticleSystemRenderer>().material.color == Color.cyan)
@@ -68,6 +68,7 @@ public class FlyDetectionManager : MonoBehaviour
                         {
                             Debug.Log("Picture Taken!");
                             photoTaken = true;
+                            seen = false;
                             cameraLens.color = new Vector4(cameraLens.color.r, oldColorG, cameraLens.color.b, cameraLens.color.a);
                             FlyScoreManager.flyPhotos += 1;
                         }
@@ -77,7 +78,7 @@ public class FlyDetectionManager : MonoBehaviour
                 else if (particles.GetComponent<ParticleSystemRenderer>().material.color == Color.cyan)
                 {
                     seen = false;
-                    Debug.Log("I'm hidden ;)");
+                    //Debug.Log("I'm hidden ;)");
                 }
 
 
@@ -86,7 +87,7 @@ public class FlyDetectionManager : MonoBehaviour
             else if (particles.GetComponent<ParticleSystemRenderer>().material.color == Color.cyan)
             {
                 seen = false;
-                Debug.Log("I'm hidden ;)");
+                //Debug.Log("I'm hidden ;)");
             }
         }
 

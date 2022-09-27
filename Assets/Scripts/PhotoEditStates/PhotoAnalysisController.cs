@@ -37,6 +37,8 @@ public class PhotoAnalysisController : MonoBehaviour
         decisionStateHelper.decisionUI.SetActive(false);
 
         ChangeState(new PhotoEditingState());
+
+        Debug.Log("Final Timer: " + FlyScoreManager.finalTime);
     }
 
     // Update is called once per frame

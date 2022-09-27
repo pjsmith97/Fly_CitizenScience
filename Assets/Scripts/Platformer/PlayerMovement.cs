@@ -235,10 +235,14 @@ public class PlayerMovement : MonoBehaviour
         {
             if (railCompleted || player.GetButtonDown("Jump"))
             {
+                ResetObjectRotation();
+                ResetObjectVelocity();
                 JumpUp();
                 currentRail.railCompleted = false;
                 railCompleted = false;
                 Debug.Log("Off Rail!");
+                Debug.Log("Cam forward: " + HeadCam.transform.forward);
+                Debug.Log("Cam rotation: " + HeadCam.transform.rotation);
                 return;
             }
         }
@@ -342,7 +346,8 @@ public class PlayerMovement : MonoBehaviour
 
         else if (CurrentState == PlayerStates.onRail)
         {
-            TurnPlayer(CamX, Del, TurnSpeed);
+            TurnCamera(CamX, Del, TurnSpeed);
+            //Debug.Log("Forward:" + transform.forward);
 
             // Move player along the rail until there is no more rail
             if (!railCompleted)
@@ -438,13 +443,8 @@ public class PlayerMovement : MonoBehaviour
 
         // multiply direction by speed
         MoveDir = MoveDir * CurrentSpeed;
-
-        
-        /*if( CurrentState != PlayerStates.flying)
-        {*/
             
-            MoveDir.y = Rgbody.velocity.y;
-        //}
+        MoveDir.y = Rgbody.velocity.y;
         
         //apply acceleration
         float Accel = (AgilityControl * DirectionalControl) * ctrl; // represents how much control the player has over movement
@@ -542,7 +542,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3 lerpAmount = Vector3.Lerp(Rgbody.velocity, MoveDir, WallRunAcceleration * del);
         Rgbody.velocity = lerpAmount;
 
-        Debug.Log("WallRun :" + CurrentWallRunState);
+        //Debug.Log("WallRun :" + CurrentWallRunState);
     }
 
     private void MovePlayerOnRail(float del)
@@ -563,7 +563,7 @@ public class PlayerMovement : MonoBehaviour
 
         transform.position = currentRail.LinearPosition(currentRailSeg, railTransition);
         transform.position += new Vector3(0, 1, 0);
-        //transform.rotation = currentRail.Orientation(currentRailSeg, railTransition);
+        transform.forward = currentRail.SegmentForward(currentRailSeg);
 
         railCompleted = currentRail.railCompleted;
     }
@@ -573,6 +573,30 @@ public class PlayerMovement : MonoBehaviour
         YTurn += (xValue * delta) * speed;
 
         transform.rotation = Quaternion.Euler(0, YTurn, 0);
+    }
+
+    private void TurnCamera(float xValue, float delta, float speed)
+    {
+        YTurn += (xValue * delta) * speed;
+
+        HeadCam.transform.rotation = Quaternion.Euler(0, YTurn, 0);
+    }
+
+    private void ResetCameraRotation()
+    {
+        HeadCam.transform.forward = transform.forward;
+    }
+
+    private void ResetObjectRotation()
+    {
+        Vector3 levelForward = new Vector3(HeadCam.transform.forward.x, 0, HeadCam.transform.forward.z);
+        transform.forward = Quaternion.FromToRotation(transform.forward, levelForward) * transform.forward;
+    }
+
+    private void ResetObjectVelocity()
+    {
+        Vector3 levelForward = new Vector3(transform.forward.x, 0, transform.forward.z);
+        Rgbody.velocity = Quaternion.FromToRotation(Rgbody.velocity, levelForward) * Rgbody.velocity;
     }
 
     private void LookUpDown(float yValue, float delta)

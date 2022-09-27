@@ -9,11 +9,22 @@ public class CameraLensManager : MonoBehaviour
     [SerializeField] private int playerID = 0;
     [SerializeField] private Player player;
 
+    [Header("Camera Lens")]
     [SerializeField] private Image cameraLens;
+    [SerializeField] private float shutterSpeed;
+    [SerializeField] private float shutterClosingScale;
+    public bool shutterMoving;
+    public bool shutterClosing;
+
+    private Vector3 startingScale;
+
     // Start is called before the first frame update
     void Start()
     {
         player = ReInput.players.GetPlayer(playerID);
+        shutterMoving = false;
+        shutterClosing = false;
+        startingScale = cameraLens.transform.localScale;
     }
 
     // Update is called once per frame
@@ -22,13 +33,53 @@ public class CameraLensManager : MonoBehaviour
         if (player.GetButton("Aim"))
         {
             cameraLens.gameObject.SetActive(true);
+
+            if (player.GetButtonDown("TakePhoto"))
+            {
+                shutterMoving = true;
+                shutterClosing = true;
+            }
         }
 
         else if (player.GetButtonUp("Aim"))
         {
             cameraLens.gameObject.SetActive(false);
+            shutterMoving = false;
+            shutterClosing = false;
+
+            cameraLens.transform.localScale = new Vector3(startingScale.x, startingScale.y, startingScale.z);
         }
      }
+
+    private void FixedUpdate()
+    {
+        float Del = Time.deltaTime;
+
+        if (shutterMoving)
+        {
+            if (shutterClosing)
+            {
+                cameraLens.transform.localScale = new Vector3(cameraLens.transform.localScale.x - (Del * shutterSpeed),
+                    cameraLens.transform.localScale.y - (Del * shutterSpeed), cameraLens.transform.localScale.z /*- (Del * shutterSpeed)*/);
+
+                if(cameraLens.transform.localScale.x <= 0.5 * startingScale.x)
+                {
+                    shutterClosing = false;
+                }
+            }
+
+            else
+            {
+                cameraLens.transform.localScale = new Vector3(cameraLens.transform.localScale.x + (Del * shutterSpeed),
+                    cameraLens.transform.localScale.y + (Del * shutterSpeed), cameraLens.transform.localScale.z /*+ (Del * shutterSpeed)*/);
+
+                if (cameraLens.transform.localScale.x >= startingScale.x)
+                {
+                    shutterMoving = false;
+                }
+            }
+        }
+    }
 
     public GameObject CheckObstruction(Vector3 flyPos)
     {
