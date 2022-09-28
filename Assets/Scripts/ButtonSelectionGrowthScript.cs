@@ -9,7 +9,7 @@ public class ButtonSelectionGrowthScript : MonoBehaviour, ISelectHandler, IDesel
     [SerializeField] private float sizeMultiplier;
     public void OnSelect(BaseEventData eventData)
     {
-        Debug.Log(this.gameObject.name + " was selected");
+        //Debug.Log(this.gameObject.name + " was selected");
         this.transform.localScale = new Vector3(this.transform.localScale.x * sizeMultiplier, this.transform.localScale.y * sizeMultiplier, 0);
     }
 
@@ -27,7 +27,7 @@ public class ButtonSelectionGrowthScript : MonoBehaviour, ISelectHandler, IDesel
 
     public void OnDeselect(BaseEventData eventData)
     {
-        Debug.Log(this.gameObject.name + " was deselected");
+        //Debug.Log(this.gameObject.name + " was deselected");
         this.transform.localScale = new Vector3(this.transform.localScale.x / sizeMultiplier, this.transform.localScale.y / sizeMultiplier, 0);
     }
 }

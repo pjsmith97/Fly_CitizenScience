@@ -40,13 +40,7 @@ public class PhotoConfirmationState : PhotoAnalysisState
 
             if (FlyScoreManager.flyPhotos == photoAnalysis.completedPhotos)
             {
-                var sendTask = photoAnalysis.confirmationStateHelper.photoManager.SendSpiPollInfo(
-                photoAnalysis.decisionStateHelper.buttonIndexOptions[photoAnalysis.decisionStateHelper.buttonIndex],
-                (int)photoAnalysis.confirmationStateHelper.timerVal);
-
-                FlyScoreManager.flyPhotos = 0;
-
-                SceneManager.LoadSceneAsync(photoAnalysis.nextSceneName);
+                FinishLevel();
             }
 
             else
@@ -90,5 +84,19 @@ public class PhotoConfirmationState : PhotoAnalysisState
         photoAnalysis.confirmationStateHelper.confirmationButtonUI.SetActive(false);
         photoAnalysis.confirmationStateHelper.decisionTextUI.gameObject.SetActive(false);
         photoAnalysis.confirmationStateHelper.headerTextUI.gameObject.SetActive(false);
+    }
+
+    private async void FinishLevel()
+    {
+         await photoAnalysis.confirmationStateHelper.photoManager.SendSpiPollInfo(
+                photoAnalysis.decisionStateHelper.buttonIndexOptions[photoAnalysis.decisionStateHelper.buttonIndex],
+                (int)photoAnalysis.confirmationStateHelper.timerVal);
+
+        photoAnalysis.FinishLevel();
+
+        FlyScoreManager.sceneName = "";
+        FlyScoreManager.flyPhotos = 0;
+
+        SceneManager.LoadSceneAsync(photoAnalysis.nextSceneName);
     }
 }

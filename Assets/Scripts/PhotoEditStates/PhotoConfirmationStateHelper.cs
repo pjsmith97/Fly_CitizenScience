@@ -59,6 +59,8 @@ public class PhotoConfirmationStateHelper : MonoBehaviour
         decisionTextUI.gameObject.SetActive(false);
         headerTextUI.gameObject.SetActive(false);
         confirmationPanelUI.SetActive(false);
+
+        photoManager = GetComponent<PhotoManager>();
     }
 
     // Update is called once per frame

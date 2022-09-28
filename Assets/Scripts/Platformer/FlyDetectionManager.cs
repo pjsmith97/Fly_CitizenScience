@@ -71,6 +71,7 @@ public class FlyDetectionManager : MonoBehaviour
                             seen = false;
                             cameraLens.color = new Vector4(cameraLens.color.r, oldColorG, cameraLens.color.b, cameraLens.color.a);
                             FlyScoreManager.flyPhotos += 1;
+                            FlyScoreManager.changeCounterUI = true;
                         }
                     }
                 }

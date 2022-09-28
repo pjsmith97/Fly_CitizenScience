@@ -17,6 +17,7 @@ public class PhotoAnalysisController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI panelTitle;
 
     public int completedPhotos;
+    public int correctPhotos;
 
     public string nextSceneName;
 
@@ -27,6 +28,7 @@ public class PhotoAnalysisController : MonoBehaviour
         player.controllers.maps.SetMapsEnabled(false, "Default");*/
 
         completedPhotos = 0;
+        correctPhotos = 0;
 
         editingStateHelper = GetComponent<PhotoEditingStateHelper>();
 
@@ -67,5 +69,11 @@ public class PhotoAnalysisController : MonoBehaviour
     public void SetPanelTitle(string newTitle)
     {
         panelTitle.text = newTitle;
+    }
+
+    public void FinishLevel()
+    {
+        GetComponent<LevelSaveManager>().SaveData();
+        GetComponent<LevelSaveManager>().LoadData();
     }
 }

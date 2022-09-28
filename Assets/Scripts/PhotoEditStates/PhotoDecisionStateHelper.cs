@@ -96,6 +96,8 @@ public class PhotoDecisionStateHelper : MonoBehaviour
 
         likelySymbol = false;
 
+        photoManager = GetComponent<PhotoManager>();
+
         //symbolIndexOptions[0].SetActive(true);
     }
 

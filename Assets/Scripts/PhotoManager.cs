@@ -21,6 +21,8 @@ public class PhotoManager : MonoBehaviour
     public string playerCode /*= "player00"*/;
     public string playerGroup = "playergroup";
 
+    private PhotoAnalysisController analysisController;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -42,6 +44,8 @@ public class PhotoManager : MonoBehaviour
 
         var spiPollTask = GetSpiPollInfo();
         //photoURL = spiPollTask.Result;
+
+        analysisController = GetComponent<PhotoAnalysisController>();
     }
 
     // Update is called once per frame
@@ -172,12 +176,24 @@ public class PhotoManager : MonoBehaviour
             //currentTaskID = (int)responseBody["task"]["id"];
             Debug.Log("uid: " + (string)responseBody["uid"]);
             Debug.Log("Score: " + (string)responseBody["score"]);
-            Debug.Log("Result Reliability: " + (string)responseBody["reliability"]);
+            //Debug.Log("Result Reliability: " + (string)responseBody["reliability"]);
 
             if(responseBody["task"]["solution"] != null)
             {
+
+                if (int.Parse((string)responseBody["score"]) == 1)
+                {
+                    analysisController.correctPhotos += 1;
+                }
+
                 Debug.Log("Solution: " + (string)responseBody["task"]["solution"]["gender"]);
             }
+            else
+            {
+                analysisController.correctPhotos += 1;
+            }
+
+            Debug.Log("Correct Photo Count: " + analysisController.correctPhotos);
             
         }
         catch (System.Exception ex)
