@@ -8,6 +8,7 @@ public class FlyScoreManager : MonoBehaviour
 {
     [SerializeField] GameObject fliesListObject;
     [SerializeField] TextMeshProUGUI flyCounterText;
+    public int maxFlies;
     private List<FlyDetectionManager> flies;
     public static bool changeCounterUI;
     public static int flyPhotos;
@@ -22,10 +23,30 @@ public class FlyScoreManager : MonoBehaviour
         flyPhotos = 0;
 
         flies = new List<FlyDetectionManager>();
-        foreach(Transform fly in fliesListObject.transform)
+        List<int> flyIndex = new List<int>();
+
+        for (int i = 0; i < maxFlies; i++)
         {
-            flies.Add(fly.gameObject.GetComponent <FlyDetectionManager>());
+            bool done = false;
+            while (!done)
+            {
+                int flyRand = Random.Range(0, fliesListObject.transform.childCount);
+                if (!flyIndex.Contains(flyRand))
+                {
+                    GameObject fly = fliesListObject.transform.GetChild(flyRand).gameObject;
+                    fly.SetActive(true);
+                    flies.Add(fly.GetComponent<FlyDetectionManager>());
+                    flyIndex.Add(flyRand);
+                    done = true;
+                }
+            }
         }
+
+        /*foreach(Transform fly in fliesListObject.transform)
+        {
+
+            
+        }*/
 
         timerManager = GetComponent<TimerManager>();
 

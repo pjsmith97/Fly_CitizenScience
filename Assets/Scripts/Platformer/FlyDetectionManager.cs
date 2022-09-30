@@ -51,22 +51,22 @@ public class FlyDetectionManager : MonoBehaviour
             {
                 if (lensManager.CheckObstruction(transform.position) == this.gameObject)
                 {
-                    if (viewPos.z < 15 && particles.GetComponent<ParticleSystemRenderer>().material.color != Color.cyan && !photoTaken)
+                    if (viewPos.z < 15 && !seen && !photoTaken)
                     {
                         seen = true;
-                        Debug.Log("You see me!!!");
+                        Debug.Log("You see " + this.gameObject.name + "!!!");
                     }
-                    else if((viewPos.z >= 15 || photoTaken) && particles.GetComponent<ParticleSystemRenderer>().material.color == Color.cyan)
+                    else if((viewPos.z >= 15 || photoTaken) && seen)
                     {
                         seen = false;
                         //Debug.Log("I'm hidden ;)");
                     }
 
-                    else if (particles.GetComponent<ParticleSystemRenderer>().material.color == Color.cyan)
+                    else if (seen)
                     {
                         if (RewiredPlayer.GetButtonDown("TakePhoto"))
                         {
-                            Debug.Log("Picture Taken!");
+                            Debug.Log(this.gameObject.name + " Picture Taken!");
                             photoTaken = true;
                             seen = false;
                             cameraLens.color = new Vector4(cameraLens.color.r, oldColorG, cameraLens.color.b, cameraLens.color.a);
@@ -76,30 +76,30 @@ public class FlyDetectionManager : MonoBehaviour
                     }
                 }
 
-                else if (particles.GetComponent<ParticleSystemRenderer>().material.color == Color.cyan)
+                else if (seen)
                 {
                     seen = false;
                     //Debug.Log("I'm hidden ;)");
                 }
 
-
             }
 
-            else if (particles.GetComponent<ParticleSystemRenderer>().material.color == Color.cyan)
+            else if (seen)
             {
                 seen = false;
-                //Debug.Log("I'm hidden ;)");
+                Debug.Log(this.gameObject.name + " hidden ;)");
             }
         }
 
         else if (RewiredPlayer.GetButtonUp("Aim"))
         {
-            if (particles.GetComponent<ParticleSystemRenderer>().material.color == Color.cyan)
+            if (seen)
             {
                 seen = false;
-                cameraLens.color = new Vector4(cameraLens.color.r, oldColorG, cameraLens.color.b, cameraLens.color.a);
                 Debug.Log("No more photos...");
             }
+
+            cameraLens.color = new Vector4(cameraLens.color.r, oldColorG, cameraLens.color.b, cameraLens.color.a);
         }
 
         if (seen)

@@ -165,7 +165,7 @@ public class PlayerMovement : MonoBehaviour
                 {
                     OriginForward = transform.forward;
                     LedgeGrab(newLedge);
-                    Debug.Log("Grab!");
+                    //Debug.Log("Grab!");
                 }
             }
 
@@ -240,9 +240,9 @@ public class PlayerMovement : MonoBehaviour
                 JumpUp();
                 currentRail.railCompleted = false;
                 railCompleted = false;
-                Debug.Log("Off Rail!");
+                /*Debug.Log("Off Rail!");
                 Debug.Log("Cam forward: " + HeadCam.transform.forward);
-                Debug.Log("Cam rotation: " + HeadCam.transform.rotation);
+                Debug.Log("Cam rotation: " + HeadCam.transform.rotation);*/
                 return;
             }
         }
@@ -330,7 +330,7 @@ public class PlayerMovement : MonoBehaviour
             else
             {
                 // pull up finished
-                Debug.Log("Pull UP!"); 
+                //Debug.Log("Pull UP!"); 
                 OnGround();
             }
         }

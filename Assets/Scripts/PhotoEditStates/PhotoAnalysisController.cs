@@ -19,6 +19,8 @@ public class PhotoAnalysisController : MonoBehaviour
     public int completedPhotos;
     public int correctPhotos;
 
+    public float totalGuessingTime;
+
     public string nextSceneName;
 
     // Start is called before the first frame update
@@ -30,6 +32,8 @@ public class PhotoAnalysisController : MonoBehaviour
         completedPhotos = 0;
         correctPhotos = 0;
 
+        totalGuessingTime = 0;
+
         editingStateHelper = GetComponent<PhotoEditingStateHelper>();
 
         decisionStateHelper = GetComponent<PhotoDecisionStateHelper>();
@@ -40,7 +44,7 @@ public class PhotoAnalysisController : MonoBehaviour
 
         ChangeState(new PhotoEditingState());
 
-        Debug.Log("Final Timer: " + FlyScoreManager.finalTime);
+        Debug.Log("Final Search Timer: " + FlyScoreManager.finalTime);
     }
 
     // Update is called once per frame

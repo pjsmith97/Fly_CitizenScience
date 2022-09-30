@@ -40,7 +40,7 @@ public class LevelSaveManager : MonoBehaviour
     {
         Dictionary<string, float> newData = new Dictionary<string, float>();
 
-        if(finalSearchingTime < FlyScoreManager.finalTime)
+        if(finalSearchingTime > FlyScoreManager.finalTime)
         {
             newData["Best Search Time"] = FlyScoreManager.finalTime;
         }
@@ -49,14 +49,16 @@ public class LevelSaveManager : MonoBehaviour
             newData["Best Search Time"] = finalSearchingTime;
         }
 
-        float classificationTimer = GetComponent<PhotoAnalysisController>().confirmationStateHelper.timerVal;
+        float classificationTimer = GetComponent<PhotoAnalysisController>().totalGuessingTime;
         int correctPhotos = GetComponent<PhotoAnalysisController>().correctPhotos;
         
+
+        // Classification time only matters if photo score is at least as good as the current high score
         if (analysisScore <= correctPhotos)
         {
             newData["Best Photo Score"] = correctPhotos;
 
-            if (finalClassificationTime < classificationTimer)
+            if (finalClassificationTime > classificationTimer)
             {
                 newData["Best Classification Time"] = classificationTimer;
 
@@ -108,9 +110,9 @@ public class LevelSaveManager : MonoBehaviour
 
         else
         {
-            finalSearchingTime = 0;
+            finalSearchingTime = 60*60;
             analysisScore = 0;
-            finalClassificationTime = 0;
+            finalClassificationTime = 60*60;
             Debug.LogWarning(savePath + " Data doesn't exist");
         }
 
