@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class EnvironmentColorScript : MonoBehaviour
 {
+    [SerializeField] bool identify;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -16,19 +18,22 @@ public class EnvironmentColorScript : MonoBehaviour
         // Call SetColor using the shader property name "_Color" and setting the color
         int thisLayer = gameObject.layer;
 
-        if(thisLayer == LayerMask.NameToLayer("Wall"))
+        if (identify)
         {
-            thisRenderer.material.SetColor("_Color", Color.red);
-        }
-       
-        else if(thisLayer == LayerMask.NameToLayer("Ledge"))
-        {
-            thisRenderer.material.SetColor("_Color", Color.green);
-        }
+            if (thisLayer == LayerMask.NameToLayer("WallRunning"))
+            {
+                thisRenderer.material.SetColor("_Color", new Vector4(1, 0.5f, 0.5f, 1));
+            }
 
-        else if (thisLayer == LayerMask.NameToLayer("Bouncy"))
-        {
-            thisRenderer.material.SetColor("_Color", Color.blue);
+            else if (thisLayer == LayerMask.NameToLayer("Ledge"))
+            {
+                thisRenderer.material.SetColor("_Color", new Vector4(0.5f, 1, 0.5f, 1));
+            }
+
+            else if (thisLayer == LayerMask.NameToLayer("Bouncy"))
+            {
+                thisRenderer.material.SetColor("_Color", Color.blue);
+            }
         }
     }
 
