@@ -81,6 +81,7 @@ public class PlayerMovement : MonoBehaviour
     public float WallRunAcceleration = 2;
     private Vector3 WallJumpDirection;
     public Vector3 WallNormal;
+    public Vector3 WallRight;
 
     [Header("Ledge Grabs")]
     public float PullUpTotalTime = 0.5f;
@@ -209,12 +210,16 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (CurrentState == PlayerStates.onWall)
         {
+            //Debug.Log("Forward 1: " + transform.forward);
+
             // check for walls to run on
             bool wallExists = CheckWall(XMov, YMov);
 
             if (!wallExists)
             {
                 InAir();
+                ResetObjectRotation();
+                //Debug.Log("Dropping");
                 return;
             }
 
@@ -222,6 +227,7 @@ public class PlayerMovement : MonoBehaviour
             if (player.GetButtonDown("Jump"))
             {
                 WallJump();
+                ResetObjectRotation();
                 return;
             }
 
@@ -229,7 +235,11 @@ public class PlayerMovement : MonoBehaviour
             if (checkGround)
             {
                 OnGround();
+                ResetObjectRotation();
+                return;
             }
+
+            //Debug.Log("Forward 2: " + transform.forward);
         }
         else if (CurrentState == PlayerStates.onRail)
         {
@@ -339,7 +349,7 @@ public class PlayerMovement : MonoBehaviour
             // increment wall run timer
             //WallRunTimer += Del;
 
-            TurnPlayer(CamX, Del, TurnSpeedOnWalls);
+            TurnCamera(CamX, Del, TurnSpeedOnWalls);
 
             MovePlayerOnWall(YMov, Del);
         }
@@ -373,12 +383,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void WallJump()
     {
+        Rgbody.velocity = Quaternion.FromToRotation(Rgbody.velocity, 
+            HeadCam.transform.forward) * Rgbody.velocity;
+
         Vector3 jumpVelocity = Rgbody.velocity;
         jumpVelocity.y = 0;
 
         Rgbody.velocity = jumpVelocity;
 
-        WallJumpDirection = new Vector3(HeadCam.transform.forward.x, 1, HeadCam.transform.forward.z);
+        /*WallJumpDirection = new Vector3(HeadCam.transform.forward.x, 1, HeadCam.transform.forward.z);
         WallJumpDirection = WallJumpDirection.normalized;
 
         float WalltoCamAngle = Vector3.Angle(WallNormal, WallJumpDirection);
@@ -386,9 +399,11 @@ public class PlayerMovement : MonoBehaviour
         if (WalltoCamAngle > 55f)
         {
             WallJumpDirection = Quaternion.AngleAxis(WalltoCamAngle, transform.up) * WallJumpDirection;
-        }
+        }*/
 
-        Rgbody.AddForce(WallJumpDirection * JumpForce, ForceMode.Impulse);
+        Rgbody.AddForce(transform.up * (JumpForce*1.5f), ForceMode.Impulse);
+
+        Debug.Log("Wall Jump!!!");
 
         tryingToGrab = true;
 
@@ -463,6 +478,52 @@ public class PlayerMovement : MonoBehaviour
         //Debug.Log("Horizontal: " + horizontal + ", Vertical: " + vertical);
     }
 
+    private void MovePlayerOnWall(float vertivalMov, float del)
+    {
+        // Get movement direction
+        Vector3 MoveDir = transform.up * vertivalMov;
+        MoveDir = MoveDir * WallRunUpwardsMovement;
+
+        if (Vector3.Dot(HeadCam.transform.forward, WallRight) >= 0)
+        {
+            MoveDir += WallRight * CurrentSpeed;
+        }
+        else
+        {
+            MoveDir += -WallRight * CurrentSpeed;
+        }
+
+        
+
+        Vector3 lerpAmount = Vector3.Lerp(Rgbody.velocity, MoveDir, WallRunAcceleration * del);
+        Rgbody.velocity = lerpAmount;
+
+        //Debug.Log("WallRun :" + CurrentWallRunState);
+    }
+
+    private void MovePlayerOnRail(float del)
+    {
+        railTransition += del * Mathf.Max(CurrentSpeed, 5f); // TODO test this with CurrentSpeed
+
+        if (railTransition > 1)
+        {
+            railTransition = 0;
+            currentRailSeg++;
+        }
+
+        else if (railTransition < 0)
+        {
+            railTransition = 1;
+            currentRailSeg--;
+        }
+
+        transform.position = currentRail.LinearPosition(currentRailSeg, railTransition);
+        transform.position += new Vector3(0, 1, 0);
+        transform.forward = currentRail.SegmentForward(currentRailSeg);
+
+        railCompleted = currentRail.railCompleted;
+    }
+
     private void CheckGroundState(float horizontal, float vertical)
     {
 
@@ -531,43 +592,6 @@ public class PlayerMovement : MonoBehaviour
         
     }
 
-    private void MovePlayerOnWall(float vertivalMov, float del)
-    {
-        // Get movement direction
-        Vector3 MoveDir = transform.up * vertivalMov;
-        MoveDir = MoveDir * WallRunUpwardsMovement;
-
-        MoveDir += transform.forward * CurrentSpeed;
-
-        Vector3 lerpAmount = Vector3.Lerp(Rgbody.velocity, MoveDir, WallRunAcceleration * del);
-        Rgbody.velocity = lerpAmount;
-
-        //Debug.Log("WallRun :" + CurrentWallRunState);
-    }
-
-    private void MovePlayerOnRail(float del)
-    {
-        railTransition += del * Mathf.Max(CurrentSpeed, 5f); // TODO test this with CurrentSpeed
-
-        if(railTransition > 1)
-        {
-            railTransition = 0;
-            currentRailSeg++;
-        }
-
-        else if(railTransition < 0)
-        {
-            railTransition = 1;
-            currentRailSeg--;
-        }
-
-        transform.position = currentRail.LinearPosition(currentRailSeg, railTransition);
-        transform.position += new Vector3(0, 1, 0);
-        transform.forward = currentRail.SegmentForward(currentRailSeg);
-
-        railCompleted = currentRail.railCompleted;
-    }
-
     private void TurnPlayer(float xValue, float delta, float speed)
     {
         YTurn += (xValue * delta) * speed;
@@ -591,6 +615,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 levelForward = new Vector3(HeadCam.transform.forward.x, 0, HeadCam.transform.forward.z);
         transform.forward = Quaternion.FromToRotation(transform.forward, levelForward) * transform.forward;
+        Debug.Log("Reset Object Rotation");
     }
 
     private void ResetObjectVelocity()

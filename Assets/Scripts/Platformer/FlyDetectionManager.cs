@@ -12,6 +12,7 @@ public class FlyDetectionManager : MonoBehaviour
     [Header("Camera")]
     [SerializeField] private Image cameraLens;
     [SerializeField] private CameraLensManager lensManager;
+    [SerializeField] private Image testingFlyTracker;
     
     [Header("Particles")]
     [SerializeField] private ParticleSystem particles;
@@ -25,6 +26,9 @@ public class FlyDetectionManager : MonoBehaviour
     private Camera mainCamera;
     //private Renderer thisRenderer;
     private float oldColorG;
+
+    [Header("Testing")]
+    public Vector3 flyViewPos;
     
 
     // Start is called before the first frame update
@@ -54,6 +58,7 @@ public class FlyDetectionManager : MonoBehaviour
                     if (viewPos.z < 15 && !seen && !photoTaken)
                     {
                         seen = true;
+                        flyViewPos = viewPos;
                         Debug.Log("You see " + this.gameObject.name + "!!!");
                     }
                     else if((viewPos.z >= 15 || photoTaken) && seen)
@@ -106,13 +111,17 @@ public class FlyDetectionManager : MonoBehaviour
         {
             particles.GetComponent<ParticleSystemRenderer>().material.SetColor("_Color", Color.cyan);
             cameraLens.color = new Vector4(cameraLens.color.r, 255, cameraLens.color.b, cameraLens.color.a);
+            testingFlyTracker.gameObject.SetActive(true);
+            testingFlyTracker.transform.position = mainCamera.WorldToScreenPoint(transform.position);
         }
         else if(particles.GetComponent<ParticleSystemRenderer>().material.color == Color.white && photoTaken)
         {
+            testingFlyTracker.gameObject.SetActive(false);
             particles.GetComponent<ParticleSystemRenderer>().material.SetColor("_Color", Color.cyan);
         }
         else if(particles.GetComponent<ParticleSystemRenderer>().material.color == Color.cyan && !photoTaken)
         {
+            testingFlyTracker.gameObject.SetActive(false);
             particles.GetComponent<ParticleSystemRenderer>().material.SetColor("_Color", Color.white);
             cameraLens.color = new Vector4(cameraLens.color.r, oldColorG, cameraLens.color.b, cameraLens.color.a);
         }

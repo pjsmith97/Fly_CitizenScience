@@ -36,6 +36,7 @@ public class PlayerCollision : MonoBehaviour
             return true;
         }
 
+        //Debug.Log("Not touching ground!");
         return false;
     }
 
@@ -112,15 +113,18 @@ public class PlayerCollision : MonoBehaviour
 
             // Return the normal
             GetComponent<PlayerMovement>().WallNormal = hitInfo.normal;
+            GetComponent<PlayerMovement>().WallRight = ColHit[0].transform.right;
 
             //Determine if wall is on the right or left
             if(Vector3.Dot(rayDir, transform.right) >= 0)
             {
                 GetComponent<PlayerMovement>().CurrentWallRunState = PlayerMovement.WallRunStates.rightWall;
+                transform.forward = -GetComponent<PlayerMovement>().WallRight;
             }
             else
             {
                 GetComponent<PlayerMovement>().CurrentWallRunState = PlayerMovement.WallRunStates.leftWall;
+                transform.forward = GetComponent<PlayerMovement>().WallRight;
             }
 
             // there is a wall in front of player
@@ -149,9 +153,9 @@ public class PlayerCollision : MonoBehaviour
         Vector3 pos = transform.position + (-transform.up * bottomOffset);
         Gizmos.DrawSphere(pos, FloorCheckRadius);
 
-        Gizmos.color = Color.green;
+        /*Gizmos.color = Color.green;
         Vector3 posRail = transform.position + (-transform.up * railBottomOffset);
-        Gizmos.DrawSphere(posRail, RailCheckRadius);
+        Gizmos.DrawSphere(posRail, RailCheckRadius);*/
 
         Gizmos.color = Color.red;
         Vector3 pos2 = transform.position + (transform.forward * frontOffset);

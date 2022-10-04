@@ -18,6 +18,12 @@ public class CameraLensManager : MonoBehaviour
 
     private Vector3 startingScale;
 
+    // Testing
+    public bool cameraRay;
+    private float rayDist;
+    private Vector3 rayDirection;
+    public Vector3 currentFlyPos;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,6 +31,9 @@ public class CameraLensManager : MonoBehaviour
         shutterMoving = false;
         shutterClosing = false;
         startingScale = cameraLens.transform.localScale;
+
+        cameraRay = false;
+        rayDist = 0;
     }
 
     // Update is called once per frame
@@ -46,6 +55,7 @@ public class CameraLensManager : MonoBehaviour
             cameraLens.gameObject.SetActive(false);
             shutterMoving = false;
             shutterClosing = false;
+            //cameraRay = false;
 
             cameraLens.transform.localScale = new Vector3(startingScale.x, startingScale.y, startingScale.z);
         }
@@ -93,11 +103,28 @@ public class CameraLensManager : MonoBehaviour
         
         if(Physics.Raycast(ray, out hitInfo))
         {
+            cameraRay = true;
+            rayDirection = ray.direction;
+            rayDist = hitInfo.distance;
+            currentFlyPos = flyPos;
             return hitInfo.transform.gameObject;
         }
         else
         {
+            cameraRay = false;
             return null;
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (cameraRay)
+        {
+            //Debug.Log("Drawing Ray: " + rayDirection);
+            //Debug.Log("Position: " + currentFlyPos);
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, currentFlyPos);
+        }
+        
     }
 }

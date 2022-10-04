@@ -42,6 +42,8 @@ public class PhotoAnalysisController : MonoBehaviour
 
         decisionStateHelper.decisionUI.SetActive(false);
 
+        nextSceneName = FlyScoreManager.sceneName;
+
         ChangeState(new PhotoEditingState());
 
         Debug.Log("Final Search Timer: " + FlyScoreManager.finalTime);
