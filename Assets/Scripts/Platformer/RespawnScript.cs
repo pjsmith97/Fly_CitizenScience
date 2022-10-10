@@ -11,6 +11,7 @@ public class RespawnScript : MonoBehaviour
     public void Respawn()
     {
         player.transform.position = respawnPt.position;
+        player.transform.forward = Vector3.zero;
         player.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
     }
 }

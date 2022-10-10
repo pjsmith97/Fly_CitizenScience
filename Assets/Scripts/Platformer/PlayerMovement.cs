@@ -354,6 +354,8 @@ public class PlayerMovement : MonoBehaviour
             // increment wall run timer
             //WallRunTimer += Del;
 
+            TurnCamera(CamX, Del, TurnSpeedOnWalls);
+
             // check for walls to run on
             bool wallExists = CheckWall(XMov, YMov);
 
@@ -364,8 +366,6 @@ public class PlayerMovement : MonoBehaviour
                 //Debug.Log("Dropping");
                 return;
             }
-
-            TurnCamera(CamX, Del, TurnSpeedOnWalls);
 
             MovePlayerOnWall(YMov, Del);
 
@@ -554,7 +554,7 @@ public class PlayerMovement : MonoBehaviour
 
         if(vertical > -0.4)
         {
-            if (Mathf.Abs(horizontal) > Mathf.Abs(vertical))
+            if (Mathf.Abs(horizontal) + 0.3 > Mathf.Abs(vertical))
             {
                 if (fast)
                 {
@@ -613,6 +613,8 @@ public class PlayerMovement : MonoBehaviour
         YTurn += (xValue * delta) * speed;
 
         HeadCam.transform.rotation = Quaternion.Euler(0, YTurn, 0);
+
+        //Debug.Log("TC Cam Right: " + HeadCam.transform.right);
     }
 
     private void LookUpDown(float yValue, float delta)
@@ -629,7 +631,7 @@ public class PlayerMovement : MonoBehaviour
         {
             Debug.Log("Axis Y Val: " + yValue);
             Debug.Log("Xturn Val: " + XTurn);
-            Debug.Log("Cam Local Rotation: " + HeadCam.transform.localRotation);
+            Debug.Log("LUD Cam Right: " + HeadCam.transform.right);
         }*/
     }
 

@@ -28,6 +28,18 @@ public class PlayerCollision : MonoBehaviour
 
     private Vector3 collisionCamForward;
 
+    [Header("Wall Run Cam Test")]
+    public Vector3 wallDir;
+    public Vector3 camWallRight;
+    public Vector3 onDrawCamRight;
+    public Vector3 fixedCamRight;
+    public float dot;
+
+    private void FixedUpdate()
+    {
+        fixedCamRight = GetComponent<PlayerMovement>().HeadCam.transform.right;
+    }
+
     public bool CheckFloor(Vector3 Dir)
     {
         Vector3 pos = transform.position + (Dir * bottomOffset); //position of floor checker
@@ -121,16 +133,31 @@ public class PlayerCollision : MonoBehaviour
             Quaternion WalltoCamAngle;
 
             //Determine if wall is on the right or left
-            if (Vector3.Dot(rayDir, GetComponent<PlayerMovement>().HeadCam.transform.right) >= 0)
+            if (Vector3.Dot(GetComponent<PlayerMovement>().WallRight,
+                GetComponent<PlayerMovement>().HeadCam.transform.forward) < 0)
             {
                 GetComponent<PlayerMovement>().CurrentWallRunState = PlayerMovement.WallRunStates.rightWall;
                 newDir = -GetComponent<PlayerMovement>().WallRight;
+
+                //Debug.Log(GetComponent<PlayerMovement>().CurrentWallRunState);
             }
             else
             {
                 GetComponent<PlayerMovement>().CurrentWallRunState = PlayerMovement.WallRunStates.leftWall;
                 newDir = GetComponent<PlayerMovement>().WallRight;
+
+                //Debug.Log(GetComponent<PlayerMovement>().CurrentWallRunState);
             }
+
+            wallDir = rayDir;
+
+            /*Debug.Log("Transform Right: " + GetComponent<PlayerMovement>().HeadCam.transform.right);
+            Debug.Log("Wall Dir: " + wallDir);
+            Debug.Log("Dot: " + Vector3.Dot(rayDir, GetComponent<PlayerMovement>().HeadCam.transform.right));*/
+            Debug.Log(GetComponent<PlayerMovement>().CurrentWallRunState);
+
+            camWallRight = GetComponent<PlayerMovement>().HeadCam.transform.right;
+            dot = Vector3.Dot(rayDir, GetComponent<PlayerMovement>().HeadCam.transform.right);
 
             Vector3 oldCamForward = GetComponent<PlayerMovement>().HeadCam.transform.forward;
 
@@ -142,12 +169,7 @@ public class PlayerCollision : MonoBehaviour
 
             GetComponent<PlayerMovement>().HeadCam.transform.rotation *= Quaternion.Inverse(WalltoCamAngle);
 
-            /*transform.forward = newDir;
-
-            Quaternion offset =
-                    Quaternion.Inverse(GetComponent<PlayerMovement>().HeadCam.transform.rotation) * WalltoCamAngle;*/
-
-            //GetComponent<PlayerMovement>().HeadCam.transform.rotation *= Quaternion.Inverse(WalltoCamAngle);
+            
 
             if (rayDir.magnitude >= 0.5 * WallCheckRadius)
             {
@@ -155,7 +177,7 @@ public class PlayerCollision : MonoBehaviour
             }
 
             collisionCamForward = GetComponent<PlayerMovement>().HeadCam.transform.forward;
-            Debug.Log("Collsion Cam Forward: " + collisionCamForward);
+            //Debug.Log("Collsion Cam Forward: " + collisionCamForward);
 
             // there is a wall in front of player
             return true;
@@ -183,13 +205,13 @@ public class PlayerCollision : MonoBehaviour
         Vector3 pos = transform.position + (-transform.up * bottomOffset);
         Gizmos.DrawSphere(pos, FloorCheckRadius);
 
-        /*Gizmos.color = Color.green;
+        Gizmos.color = Color.green;
         Vector3 posRail = transform.position + (-transform.up * railBottomOffset);
-        Gizmos.DrawSphere(posRail, RailCheckRadius);*/
+        Gizmos.DrawSphere(posRail, RailCheckRadius);
 
-        Gizmos.color = Color.red;
+        /*Gizmos.color = Color.red;
         Vector3 pos2 = transform.position + (transform.forward * frontOffset);
-        Gizmos.DrawSphere(pos2, WallCheckRadius);
+        Gizmos.DrawSphere(pos2, WallCheckRadius);*/
 
         Gizmos.color = Color.cyan;
         Vector3 pos3 = transform.position + (transform.forward * ForwardLedgeCheckPos) + (transform.up * UpwardLedgeCheckPos);
@@ -200,7 +222,16 @@ public class PlayerCollision : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawLine(GetComponent<PlayerMovement>().HeadCam.transform.position,
-            GetComponent<PlayerMovement>().HeadCam.transform.position + collisionCamForward * 100);
+            GetComponent<PlayerMovement>().HeadCam.transform.position + 
+            GetComponent<PlayerMovement>().HeadCam.transform.right * 100);
+
+
+        onDrawCamRight = GetComponent<PlayerMovement>().HeadCam.transform.right;
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(GetComponent<PlayerMovement>().HeadCam.transform.position,
+            GetComponent<PlayerMovement>().HeadCam.transform.position +
+            camWallRight * 10);
     }
 
     // Start is called before the first frame update
