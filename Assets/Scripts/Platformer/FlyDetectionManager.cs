@@ -51,11 +51,11 @@ public class FlyDetectionManager : MonoBehaviour
         {
             Vector3 viewPos = mainCamera.WorldToViewportPoint(transform.position);
 
-            if (viewPos.x >= 0.4 && viewPos.x <= 0.6 && viewPos.y >= 0.4 && viewPos.y <= 0.6)
+            if (viewPos.x >= 0.4 && viewPos.x <= 0.6 && viewPos.y >= 0.2 && viewPos.y <= 0.8)
             {
                 if (lensManager.CheckObstruction(transform.position) == this.gameObject)
                 {
-                    if (viewPos.z < 15 && !seen && !photoTaken)
+                    if (viewPos.z < 15 && viewPos.z > 0 && !seen && !photoTaken)
                     {
                         seen = true;
                         flyViewPos = viewPos;
@@ -74,6 +74,7 @@ public class FlyDetectionManager : MonoBehaviour
                             Debug.Log(this.gameObject.name + " Picture Taken!");
                             photoTaken = true;
                             seen = false;
+                            testingFlyTracker.gameObject.SetActive(false);
                             cameraLens.color = new Vector4(cameraLens.color.r, oldColorG, cameraLens.color.b, cameraLens.color.a);
                             FlyScoreManager.flyPhotos += 1;
                             FlyScoreManager.changeCounterUI = true;

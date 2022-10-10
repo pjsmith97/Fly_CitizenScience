@@ -100,11 +100,14 @@ public class PlayerMovement : MonoBehaviour
     [Header("Animation Bool")]
     public bool fast;
 
+    [Header("Testing")]
+    public float LookUpTimer = 0;
+
     private PlayerCollision Collision;
     private Rigidbody Rgbody;
     private Animator Anim;
 
-    
+    private Vector3 camFixedForward;
 
     // Start is called before the first frame update
     void Start()
@@ -173,7 +176,7 @@ public class PlayerMovement : MonoBehaviour
             // check for walls to run on
             bool wallExists = CheckWall(XMov, YMov);
 
-            if (wallExists)
+            if (wallExists && AirborneTimer > 1f)
             {
                 WallRun();
                 return;
@@ -210,18 +213,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (CurrentState == PlayerStates.onWall)
         {
-            //Debug.Log("Forward 1: " + transform.forward);
-
-            // check for walls to run on
-            bool wallExists = CheckWall(XMov, YMov);
-
-            if (!wallExists)
-            {
-                InAir();
-                ResetObjectRotation();
-                //Debug.Log("Dropping");
-                return;
-            }
+            //Debug.Log("Camera Update 1: " + HeadCam.transform.forward);
 
             // check for jump
             if (player.GetButtonDown("Jump"))
@@ -240,6 +232,8 @@ public class PlayerMovement : MonoBehaviour
             }
 
             //Debug.Log("Forward 2: " + transform.forward);
+
+            //Debug.Log("Camera Update 2: " + HeadCam.transform.forward);
         }
         else if (CurrentState == PlayerStates.onRail)
         {
@@ -339,9 +333,20 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                // pull up finished
-                //Debug.Log("Pull UP!"); 
-                OnGround();
+                // check for ground to land
+                bool checkGround = Collision.CheckFloor(-transform.up);
+                // Check for rails to slide on
+                bool checkRail = Collision.CheckRails(-transform.up, out currentRail, out currentRailSeg);
+
+                if (checkGround)
+                {
+                    OnGround();
+                }
+
+                else if (checkRail)
+                {
+                    OnRail();
+                }
             }
         }
         else if (CurrentState == PlayerStates.onWall)
@@ -349,9 +354,23 @@ public class PlayerMovement : MonoBehaviour
             // increment wall run timer
             //WallRunTimer += Del;
 
+            // check for walls to run on
+            bool wallExists = CheckWall(XMov, YMov);
+
+            if (!wallExists)
+            {
+                InAir();
+                ResetObjectRotation();
+                //Debug.Log("Dropping");
+                return;
+            }
+
             TurnCamera(CamX, Del, TurnSpeedOnWalls);
 
             MovePlayerOnWall(YMov, Del);
+
+            //Debug.Log("Camera Fixed: " + HeadCam.transform.rotation);
+            camFixedForward = HeadCam.transform.forward;
         }
 
         else if (CurrentState == PlayerStates.onRail)
@@ -391,19 +410,9 @@ public class PlayerMovement : MonoBehaviour
 
         Rgbody.velocity = jumpVelocity;
 
-        /*WallJumpDirection = new Vector3(HeadCam.transform.forward.x, 1, HeadCam.transform.forward.z);
-        WallJumpDirection = WallJumpDirection.normalized;
-
-        float WalltoCamAngle = Vector3.Angle(WallNormal, WallJumpDirection);
-
-        if (WalltoCamAngle > 55f)
-        {
-            WallJumpDirection = Quaternion.AngleAxis(WalltoCamAngle, transform.up) * WallJumpDirection;
-        }*/
-
         Rgbody.AddForce(transform.up * (JumpForce*1.5f), ForceMode.Impulse);
 
-        Debug.Log("Wall Jump!!!");
+        //Debug.Log("Wall Jump!!!");
 
         tryingToGrab = true;
 
@@ -606,6 +615,24 @@ public class PlayerMovement : MonoBehaviour
         HeadCam.transform.rotation = Quaternion.Euler(0, YTurn, 0);
     }
 
+    private void LookUpDown(float yValue, float delta)
+    {
+        XTurn -= (yValue * delta) * LookUpSpeed;
+
+        XTurn = Mathf.Clamp(XTurn, MinLookAngle, MaxLookAngle);
+
+        HeadCam.transform.localRotation = Quaternion.Euler(XTurn, 0, 0);
+
+        //LookUpTimer += delta;
+
+        /*if (CurrentState == PlayerStates.onWall)
+        {
+            Debug.Log("Axis Y Val: " + yValue);
+            Debug.Log("Xturn Val: " + XTurn);
+            Debug.Log("Cam Local Rotation: " + HeadCam.transform.localRotation);
+        }*/
+    }
+
     private void ResetCameraRotation()
     {
         HeadCam.transform.forward = transform.forward;
@@ -615,22 +642,13 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 levelForward = new Vector3(HeadCam.transform.forward.x, 0, HeadCam.transform.forward.z);
         transform.forward = Quaternion.FromToRotation(transform.forward, levelForward) * transform.forward;
-        Debug.Log("Reset Object Rotation");
+        //Debug.Log("Reset Object Rotation");
     }
 
     private void ResetObjectVelocity()
     {
         Vector3 levelForward = new Vector3(transform.forward.x, 0, transform.forward.z);
         Rgbody.velocity = Quaternion.FromToRotation(Rgbody.velocity, levelForward) * Rgbody.velocity;
-    }
-
-    private void LookUpDown(float yValue, float delta)
-    {
-        XTurn -= (yValue * delta) * LookUpSpeed;
-
-        XTurn = Mathf.Clamp(XTurn, MinLookAngle, MaxLookAngle);
-
-        HeadCam.transform.localRotation = Quaternion.Euler(XTurn, 0, 0);
     }
 
     private bool CheckWall(float xVal, float yVal)
@@ -690,5 +708,12 @@ public class PlayerMovement : MonoBehaviour
     {
         CurrentState = PlayerStates.onWall;
         Rgbody.useGravity = false;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(HeadCam.transform.position,
+            GetComponent<PlayerMovement>().HeadCam.transform.position + camFixedForward * 100);
     }
 }

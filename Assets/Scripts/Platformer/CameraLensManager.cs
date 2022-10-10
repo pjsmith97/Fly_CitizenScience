@@ -118,13 +118,13 @@ public class CameraLensManager : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (cameraRay)
+        /*if (cameraRay)
         {
             //Debug.Log("Drawing Ray: " + rayDirection);
             //Debug.Log("Position: " + currentFlyPos);
             Gizmos.color = Color.red;
             Gizmos.DrawLine(transform.position, currentFlyPos);
-        }
+        }*/
         
     }
 }

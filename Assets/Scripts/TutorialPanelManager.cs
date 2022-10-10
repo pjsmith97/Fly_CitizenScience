@@ -137,6 +137,7 @@ public class TutorialPanelManager : MonoBehaviour
                 if (player.GetButtonDown("End"))
                 {
                     inputPrompts[2].GetComponent<TextMeshProUGUI>().color = Color.cyan;
+                    FinishTutorial();
                     SceneManager.LoadScene("PhotoAnalysis");
                 }
             }
@@ -334,5 +335,10 @@ public class TutorialPanelManager : MonoBehaviour
         }
         currentUIState = state;
         currentUIState.Enter(this);
+    }
+
+    public void FinishTutorial()
+    {
+        GetComponent<TutorialSaveManager>().SaveData(true);
     }
 }

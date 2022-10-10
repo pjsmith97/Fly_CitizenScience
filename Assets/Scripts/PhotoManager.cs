@@ -91,7 +91,7 @@ public class PhotoManager : MonoBehaviour
             response = await sessionApi.V2.Players.CreateTask(playerCode, requestApiBody);
             var responseBody = response["body"];
             
-            if(responseBody["task"]["difficulty"] != null)
+            /*if(responseBody["task"]["difficulty"] != null)
             {
                 while ((int)responseBody["task"]["difficulty"] > 3 || currentTaskID == (int)responseBody["task"]["id"])
                 {
@@ -108,9 +108,18 @@ public class PhotoManager : MonoBehaviour
                     response = await sessionApi.V2.Players.CreateTask(playerCode, requestApiBody);
                     responseBody = response["body"];
                 }
-            }
-            
+            }*/
 
+            if (responseBody["task"]["difficulty"] == null)
+            {
+                Debug.Log("No Difficulty");
+            }
+
+            while (currentTaskID == (int)responseBody["task"]["id"])
+            {
+                response = await sessionApi.V2.Players.CreateTask(playerCode, requestApiBody);
+                responseBody = response["body"];
+            }
 
             photoURL = (string)responseBody["task"]["assets"]["url"];
             currentTaskID = (int)responseBody["task"]["id"];
@@ -184,13 +193,27 @@ public class PhotoManager : MonoBehaviour
                 if (int.Parse((string)responseBody["score"]) == 1)
                 {
                     analysisController.correctPhotos += 1;
+                    analysisController.solutionStateHelper.correct = true;
+                }
+                else
+                {
+                    analysisController.solutionStateHelper.correct = false;
                 }
 
                 Debug.Log("Solution: " + (string)responseBody["task"]["solution"]["gender"]);
+                analysisController.solutionStateHelper.solution = (string)responseBody["task"]["solution"]["gender"];
+
+                char[] solutionArray = analysisController.solutionStateHelper.solution.ToCharArray();
+                solutionArray[0] = char.ToUpper(solutionArray[0]);
+                analysisController.solutionStateHelper.solution = new string(solutionArray);
             }
             else
             {
                 analysisController.correctPhotos += 1;
+                analysisController.solutionStateHelper.correct = true;
+
+                Debug.Log("Solution: No Solution");
+                analysisController.solutionStateHelper.solution = "No Solution";
             }
 
             Debug.Log("Correct Photo Count: " + analysisController.correctPhotos);

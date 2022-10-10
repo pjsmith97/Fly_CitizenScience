@@ -17,6 +17,10 @@ public class FlyScoreManager : MonoBehaviour
 
     private TimerManager timerManager;
 
+    private static List<string> sceneList;
+
+    private static int sceneIdx = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -48,6 +52,11 @@ public class FlyScoreManager : MonoBehaviour
             
         }*/
 
+        sceneList = new List<string>();
+
+        sceneList.Add("TutorialLevel");
+        sceneList.Add("ParkLevel");
+
         timerManager = GetComponent<TimerManager>();
 
         flyCounterText.text = flyPhotos + "/" + flies.Count;
@@ -68,8 +77,18 @@ public class FlyScoreManager : MonoBehaviour
         {
             GetComponent<CameraTimeManager>().NormalizeTime();
             finalTime = timerManager.timer;
-            sceneName = SceneManager.GetActiveScene().name;
-            SceneManager.LoadSceneAsync("PhotoAnalysisTutorial");
+            //sceneName = SceneManager.GetActiveScene().name;
+            sceneName = sceneList[1];
+
+            if (GetComponent<TutorialSaveManager>().tutorialSeen)
+            {
+                SceneManager.LoadSceneAsync("PhotoAnalysis");
+            }
+            else
+            {
+                SceneManager.LoadSceneAsync("PhotoAnalysisTutorial");
+            }
+            
         }
     }
 }

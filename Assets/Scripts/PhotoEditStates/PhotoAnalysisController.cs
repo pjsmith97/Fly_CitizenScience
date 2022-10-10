@@ -13,6 +13,7 @@ public class PhotoAnalysisController : MonoBehaviour
     public PhotoEditingStateHelper editingStateHelper;
     public PhotoDecisionStateHelper decisionStateHelper;
     public PhotoConfirmationStateHelper confirmationStateHelper;
+    public PhotoSolutionStateHelper solutionStateHelper;
 
     [SerializeField] private TextMeshProUGUI panelTitle;
 
@@ -40,11 +41,17 @@ public class PhotoAnalysisController : MonoBehaviour
 
         confirmationStateHelper = GetComponent<PhotoConfirmationStateHelper>();
 
+        solutionStateHelper = GetComponent<PhotoSolutionStateHelper>();
+
         decisionStateHelper.decisionUI.SetActive(false);
+
+        solutionStateHelper.solutionUI.SetActive(false);
 
         nextSceneName = FlyScoreManager.sceneName;
 
         ChangeState(new PhotoEditingState());
+
+        solutionStateHelper.solution = "";
 
         Debug.Log("Final Search Timer: " + FlyScoreManager.finalTime);
     }

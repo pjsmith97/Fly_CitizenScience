@@ -85,26 +85,20 @@ public class PhotoConfirmationState : PhotoAnalysisState
 
         photoAnalysis.FinishLevel();
 
-        FlyScoreManager.sceneName = "";
+        /*FlyScoreManager.sceneName = "";
         FlyScoreManager.flyPhotos = 0;
 
-        SceneManager.LoadSceneAsync(photoAnalysis.nextSceneName);
+        SceneManager.LoadSceneAsync(photoAnalysis.nextSceneName);*/
+
+        photoAnalysis.ChangeState(new PhotoSolutionState());
     }
 
     private async void NextPhoto()
     {
-        await photoAnalysis.confirmationStateHelper.photoManager.SendAndGetSpiPollInfo(
+        await photoAnalysis.confirmationStateHelper.photoManager.SendSpiPollInfo(
                photoAnalysis.decisionStateHelper.buttonIndexOptions[photoAnalysis.decisionStateHelper.buttonIndex],
                (int)photoAnalysis.confirmationStateHelper.timerVal);
 
-        photoAnalysis.confirmationStateHelper.distortionManager.CreateBalancers();
-
-        photoAnalysis.editingStateHelper.leftSlider.value = 0;
-        photoAnalysis.editingStateHelper.rightSlider.value = 0;
-        photoAnalysis.editingStateHelper.rotationGauge.fillAmount = 0;
-
-        photoAnalysis.editingStateHelper.player.controllers.maps.SetMapsEnabled(false, "PhotoDecision");
-
-        photoAnalysis.ChangeState(new PhotoEditingState());
+        photoAnalysis.ChangeState(new PhotoSolutionState());
     }
 }

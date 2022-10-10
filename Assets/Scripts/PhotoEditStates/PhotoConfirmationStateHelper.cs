@@ -61,6 +61,7 @@ public class PhotoConfirmationStateHelper : MonoBehaviour
         confirmationPanelUI.SetActive(false);
 
         photoManager = GetComponent<PhotoManager>();
+        distortionManager = GetComponent<PhotoDistortionManager>();
     }
 
     // Update is called once per frame
