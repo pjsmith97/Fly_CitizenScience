@@ -11,21 +11,30 @@ public class LevelSaveManager : MonoBehaviour
     public float finalSearchingTime;
     public float finalClassificationTime;
     public int analysisScore;
+    public int totalCurrentClassifications;
 
-    private string savePath;
+    private string levelSavePath;
+    private string correctCounterSavePath;
 
     // Start is called before the first frame update
     void Start()
     {
-        savePath = Path.Combine(Application.persistentDataPath, "LevelScoreSaves");
+        levelSavePath = Path.Combine(Application.persistentDataPath, "LevelScoreSaves");
+        correctCounterSavePath = Path.Combine(Application.persistentDataPath, "ClassificationCounterSave");
 
-        if (!Directory.Exists(savePath))
+
+        if (!Directory.Exists(levelSavePath))
         {
-            Directory.CreateDirectory(savePath);
+            Directory.CreateDirectory(levelSavePath);
+        }
+        if (!Directory.Exists(correctCounterSavePath))
+        {
+            Directory.CreateDirectory(correctCounterSavePath);
         }
 
         sceneName = FlyScoreManager.sceneName;
-        savePath = Path.Combine(savePath, sceneName + ".save");
+        levelSavePath = Path.Combine(levelSavePath, sceneName + ".save");
+        correctCounterSavePath = Path.Combine(correctCounterSavePath, "ClassificationCounter.save");
 
         LoadData();
     }
@@ -80,10 +89,22 @@ public class LevelSaveManager : MonoBehaviour
             levelData = newData
         };
 
+        totalCurrentClassifications += correctPhotos;
+
+        var totalClassSave = new SaveClassificationCounter()
+        {
+            totalClassifications = totalCurrentClassifications
+        };
+
         var binaryFormatter = new BinaryFormatter();
-        using (var fileStream = File.Create(savePath))
+        using (var fileStream = File.Create(levelSavePath))
         {
             binaryFormatter.Serialize(fileStream, save);
+        }
+
+        using (var fileStream = File.Create(correctCounterSavePath))
+        {
+            binaryFormatter.Serialize(fileStream, totalClassSave);
         }
 
         Debug.Log("Data Saved");
@@ -92,13 +113,14 @@ public class LevelSaveManager : MonoBehaviour
     public void LoadData()
     {
         SaveLevelData save;
+        SaveClassificationCounter counterSave;
 
-        Debug.Log("Loading " + savePath);
+        Debug.Log("Loading " + levelSavePath);
 
         var binaryFormatter = new BinaryFormatter();
-        if (File.Exists(savePath))
+        if (File.Exists(levelSavePath))
         {
-            using (var fileStream = File.Open(savePath, FileMode.Open))
+            using (var fileStream = File.Open(levelSavePath, FileMode.Open))
             {
                 save = (SaveLevelData)binaryFormatter.Deserialize(fileStream);
             }
@@ -113,12 +135,27 @@ public class LevelSaveManager : MonoBehaviour
             finalSearchingTime = 60*60;
             analysisScore = 0;
             finalClassificationTime = 60*60;
-            Debug.LogWarning(savePath + " Data doesn't exist");
+            Debug.LogWarning(levelSavePath + " Data doesn't exist");
+        }
+
+        if (File.Exists(correctCounterSavePath))
+        {
+            using (var fileStream = File.Open(correctCounterSavePath, FileMode.Open))
+            {
+                counterSave = (SaveClassificationCounter)binaryFormatter.Deserialize(fileStream);
+            }
+
+            totalCurrentClassifications = counterSave.totalClassifications;
+        }
+
+        else
+        {
+            totalCurrentClassifications = 0;
         }
 
         Debug.Log("Best Search Time: " + finalSearchingTime);
         Debug.Log("Best Photo Score: " + analysisScore);
         Debug.Log("Best Classification Time: " + finalClassificationTime);
-
+        Debug.Log("Total Classifications: " + totalCurrentClassifications);
     }
 }
