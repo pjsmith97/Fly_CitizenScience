@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PhotoSolutionState : PhotoAnalysisState
 {
@@ -57,23 +56,21 @@ public class PhotoSolutionState : PhotoAnalysisState
 
             if (FlyScoreManager.flyPhotos == photoAnalysis.completedPhotos)
             {
-                FinishLevel();
+                photoAnalysis.ChangeState(new PhotoFinalResultState());
             }
-
             else
             {
-                //Debug.Log("New Total Time: " + photoAnalysis.totalGuessingTime);
                 NextPhoto();
             }
         }
     }
 
-    private async void FinishLevel()
-    {
-        FlyScoreManager.sceneName = "";
-        FlyScoreManager.flyPhotos = 0;
+    
 
-        SceneManager.LoadSceneAsync(photoAnalysis.nextSceneName);
+    public override void Exit()
+    {
+        base.Exit();
+        photoAnalysis.solutionStateHelper.solutionUI.SetActive(false);
     }
 
     private async void NextPhoto()
@@ -89,11 +86,5 @@ public class PhotoSolutionState : PhotoAnalysisState
         photoAnalysis.editingStateHelper.player.controllers.maps.SetMapsEnabled(false, "PhotoDecision");
 
         photoAnalysis.ChangeState(new PhotoEditingState());
-    }
-
-    public override void Exit()
-    {
-        base.Exit();
-        photoAnalysis.solutionStateHelper.solutionUI.SetActive(false);
     }
 }

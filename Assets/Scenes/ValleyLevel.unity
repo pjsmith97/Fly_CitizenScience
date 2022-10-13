@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: cfd535a3cf84f1841b5ff06bb263fcbb, type: 2}
+  m_LightingDataAsset: {fileID: 112000000, guid: d0151a7353cb5ab448c03fc5e2e31772, type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -3096,41 +3096,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3535854938838694958, guid: 3cfbd3bf15210ed4d96ebee9902ee877, type: 3}
-      propertyPath: frontOffset
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3535854938838694958, guid: 3cfbd3bf15210ed4d96ebee9902ee877, type: 3}
-      propertyPath: RailCheckRadius
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3535854938838694958, guid: 3cfbd3bf15210ed4d96ebee9902ee877, type: 3}
-      propertyPath: WallCheckRadius
-      value: 0.9
-      objectReference: {fileID: 0}
-    - target: {fileID: 3535854938838694958, guid: 3cfbd3bf15210ed4d96ebee9902ee877, type: 3}
-      propertyPath: FloorCheckRadius
-      value: 0.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 3535854938838694958, guid: 3cfbd3bf15210ed4d96ebee9902ee877, type: 3}
-      propertyPath: railBottomOffset
-      value: 0.9
-      objectReference: {fileID: 0}
-    - target: {fileID: 3535854938838694958, guid: 3cfbd3bf15210ed4d96ebee9902ee877, type: 3}
-      propertyPath: FloorLayers.m_Bits
-      value: 65
-      objectReference: {fileID: 0}
-    - target: {fileID: 3535854938838694958, guid: 3cfbd3bf15210ed4d96ebee9902ee877, type: 3}
-      propertyPath: LedgeGrabLayers.m_Bits
-      value: 64
-      objectReference: {fileID: 0}
     - target: {fileID: 3535854938838694960, guid: 3cfbd3bf15210ed4d96ebee9902ee877, type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 3535854938838694961, guid: 3cfbd3bf15210ed4d96ebee9902ee877, type: 3}
-      propertyPath: WallRunUpwardsMovement
-      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 8388892857847645433, guid: 3cfbd3bf15210ed4d96ebee9902ee877, type: 3}
       propertyPath: m_LocalPosition.y

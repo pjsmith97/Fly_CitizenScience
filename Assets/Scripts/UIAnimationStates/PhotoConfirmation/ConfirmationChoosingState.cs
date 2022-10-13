@@ -26,9 +26,7 @@ public class ConfirmationChoosingState : ConfirmationUIAnimationState
             if (confirmationHelper.buttonIndex == 0)
             {
                 confirmationHelper.done = true;
-                /*var sendTask = confirmationHelper.photoManager.SendSpiPollInfo(confirmationHelper.decisionText, (int)confirmationHelper.timerVal);
-                var newTask = confirmationHelper.photoManager.GetSpiPollInfo();
-                confirmationHelper.distortionManager.CreateBalancers();*/
+
             }
             else
             {

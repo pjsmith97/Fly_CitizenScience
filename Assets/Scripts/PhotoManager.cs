@@ -206,6 +206,11 @@ public class PhotoManager : MonoBehaviour
                 char[] solutionArray = analysisController.solutionStateHelper.solution.ToCharArray();
                 solutionArray[0] = char.ToUpper(solutionArray[0]);
                 analysisController.solutionStateHelper.solution = new string(solutionArray);
+
+                if(analysisController.solutionStateHelper.solution == "CantSee")
+                {
+                    analysisController.solutionStateHelper.solution = "Can\'t See";
+                }
             }
             else
             {

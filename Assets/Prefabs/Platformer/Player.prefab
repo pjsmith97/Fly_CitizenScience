@@ -67,12 +67,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3b8f14926e0b474995b9ce528cf5fcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FloorCheckRadius: 0.4
-  RailCheckRadius: 0.8
+  FloorCheckRadius: 0.7
+  RailCheckRadius: 1.5
   bottomOffset: 0
-  railBottomOffset: 0.3
-  WallCheckRadius: 0.5
-  frontOffset: 0.8
+  railBottomOffset: 0.9
+  WallCheckRadius: 0.9
+  frontOffset: 0
   RoofCheckRadius: 0
   upOffset: 0
   ForwardLedgeCheckPos: 1
@@ -80,7 +80,7 @@ MonoBehaviour:
   LedgeCheckDistance: 2.5
   FloorLayers:
     serializedVersion: 2
-    m_Bits: 193
+    m_Bits: 65
   WallLayers:
     serializedVersion: 2
     m_Bits: 128
@@ -93,6 +93,11 @@ MonoBehaviour:
   RailLayers:
     serializedVersion: 2
     m_Bits: 2048
+  wallDir: {x: 0, y: 0, z: 0}
+  camWallRight: {x: 0, y: 0, z: 0}
+  onDrawCamRight: {x: 1, y: 0, z: 0}
+  fixedCamRight: {x: 0, y: 0, z: 0}
+  dot: 0
 --- !u!114 &3535854938838694955
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,13 +146,15 @@ MonoBehaviour:
   MaxLookAngle: 80
   MinLookAngle: -80
   MaxWallRunTime: 1
-  WallRunUpwardsMovement: 8
+  WallRunUpwardsMovement: 0.1
   WallRunAcceleration: 2
   WallNormal: {x: 0, y: 0, z: 0}
+  WallRight: {x: 0, y: 0, z: 0}
   PullUpTotalTime: 0.5
   currentRail: {fileID: 0}
   currentRailSeg: 0
   fast: 0
+  LookUpTimer: 0
 --- !u!114 &3535854938838694954
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,6 +173,8 @@ MonoBehaviour:
   shutterClosingScale: 0.5
   shutterMoving: 0
   shutterClosing: 0
+  cameraRay: 0
+  currentFlyPos: {x: 0, y: 0, z: 0}
 --- !u!136 &3535854938838694957
 CapsuleCollider:
   m_ObjectHideFlags: 0

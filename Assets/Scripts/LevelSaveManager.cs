@@ -13,6 +13,10 @@ public class LevelSaveManager : MonoBehaviour
     public int analysisScore;
     public int totalCurrentClassifications;
 
+    [Header ("HighScore")]
+    public bool classificationHighScore;
+    public bool searchHighScore;
+
     private string levelSavePath;
     private string correctCounterSavePath;
 
@@ -36,6 +40,9 @@ public class LevelSaveManager : MonoBehaviour
         levelSavePath = Path.Combine(levelSavePath, sceneName + ".save");
         correctCounterSavePath = Path.Combine(correctCounterSavePath, "ClassificationCounter.save");
 
+        searchHighScore = false;
+        classificationHighScore = false;
+
         LoadData();
     }
 
@@ -52,6 +59,7 @@ public class LevelSaveManager : MonoBehaviour
         if(finalSearchingTime > FlyScoreManager.finalTime)
         {
             newData["Best Search Time"] = FlyScoreManager.finalTime;
+            searchHighScore = true;
         }
         else
         {
@@ -70,6 +78,7 @@ public class LevelSaveManager : MonoBehaviour
             if (finalClassificationTime > classificationTimer)
             {
                 newData["Best Classification Time"] = classificationTimer;
+                classificationHighScore = true;
 
             }
             else

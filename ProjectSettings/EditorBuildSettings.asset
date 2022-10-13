@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/TutorialLevel.unity
     guid: de7a18442bec34749a7cecc2d117311b
   - enabled: 1
-    path: Assets/Scenes/ParkLevel.unity
+    path: Assets/Scenes/ValleyLevel.unity
     guid: 81d8a4db6ccf86145937e21fe3859a58
   - enabled: 1
     path: Assets/Scenes/PhotoAnalysisTutorial.unity

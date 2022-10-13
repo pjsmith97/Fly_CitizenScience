@@ -151,9 +151,7 @@ public class PlayerCollision : MonoBehaviour
 
             wallDir = rayDir;
 
-            /*Debug.Log("Transform Right: " + GetComponent<PlayerMovement>().HeadCam.transform.right);
-            Debug.Log("Wall Dir: " + wallDir);
-            Debug.Log("Dot: " + Vector3.Dot(rayDir, GetComponent<PlayerMovement>().HeadCam.transform.right));*/
+
             Debug.Log(GetComponent<PlayerMovement>().CurrentWallRunState);
 
             camWallRight = GetComponent<PlayerMovement>().HeadCam.transform.right;
@@ -209,9 +207,6 @@ public class PlayerCollision : MonoBehaviour
         Vector3 posRail = transform.position + (-transform.up * railBottomOffset);
         Gizmos.DrawSphere(posRail, RailCheckRadius);
 
-        /*Gizmos.color = Color.red;
-        Vector3 pos2 = transform.position + (transform.forward * frontOffset);
-        Gizmos.DrawSphere(pos2, WallCheckRadius);*/
 
         Gizmos.color = Color.cyan;
         Vector3 pos3 = transform.position + (transform.forward * ForwardLedgeCheckPos) + (transform.up * UpwardLedgeCheckPos);

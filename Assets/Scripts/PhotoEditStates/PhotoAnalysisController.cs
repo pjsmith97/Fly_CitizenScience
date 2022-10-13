@@ -14,6 +14,7 @@ public class PhotoAnalysisController : MonoBehaviour
     public PhotoDecisionStateHelper decisionStateHelper;
     public PhotoConfirmationStateHelper confirmationStateHelper;
     public PhotoSolutionStateHelper solutionStateHelper;
+    public PhotoFinalResultStateHelper finalStateHelper;
 
     [SerializeField] private TextMeshProUGUI panelTitle;
 
@@ -43,9 +44,13 @@ public class PhotoAnalysisController : MonoBehaviour
 
         solutionStateHelper = GetComponent<PhotoSolutionStateHelper>();
 
+        finalStateHelper = GetComponent<PhotoFinalResultStateHelper>();
+
         decisionStateHelper.decisionUI.SetActive(false);
 
         solutionStateHelper.solutionUI.SetActive(false);
+
+        finalStateHelper.resultsUI.SetActive(false);
 
         nextSceneName = FlyScoreManager.sceneName;
 
@@ -87,6 +92,17 @@ public class PhotoAnalysisController : MonoBehaviour
     public void FinishLevel()
     {
         GetComponent<LevelSaveManager>().SaveData();
+
+        if (GetComponent<LevelSaveManager>().classificationHighScore)
+        {
+            finalStateHelper.classHighScore = true;
+        }
+
+        if (GetComponent<LevelSaveManager>().searchHighScore)
+        {
+            finalStateHelper.searchHighScore = true;
+        }
+
         GetComponent<LevelSaveManager>().LoadData();
     }
 }
