@@ -12,6 +12,9 @@ public class MenuController : MonoBehaviour
 
     public MainMenuStateHelper mainMenuHelper;
     public MenuTutorialStateHelper tutorialStateHelper;
+    public MenuStatsStateHelper statsHelper;
+
+    public LevelSaveManager saveManager;
     
     // Start is called before the first frame update
     void Start()
@@ -21,8 +24,12 @@ public class MenuController : MonoBehaviour
 
         mainMenuHelper = GetComponent<MainMenuStateHelper>();
         tutorialStateHelper = GetComponent<MenuTutorialStateHelper>();
+        statsHelper = GetComponent<MenuStatsStateHelper>();
+
+        saveManager = GetComponent<LevelSaveManager>();
 
         mainMenuHelper.buttons.gameObject.SetActive(false);
+        statsHelper.statsUI.SetActive(false);
 
         ChangeState(new MainMenuState());
     }

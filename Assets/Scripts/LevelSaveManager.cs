@@ -18,18 +18,19 @@ public class LevelSaveManager : MonoBehaviour
     public bool searchHighScore;
 
     private string levelSavePath;
+    private string levelDirectoryPath;
     private string correctCounterSavePath;
 
     // Start is called before the first frame update
     void Start()
     {
-        levelSavePath = Path.Combine(Application.persistentDataPath, "LevelScoreSaves");
+        levelDirectoryPath = Path.Combine(Application.persistentDataPath, "LevelScoreSaves");
         correctCounterSavePath = Path.Combine(Application.persistentDataPath, "ClassificationCounterSave");
 
 
-        if (!Directory.Exists(levelSavePath))
+        if (!Directory.Exists(levelDirectoryPath))
         {
-            Directory.CreateDirectory(levelSavePath);
+            Directory.CreateDirectory(levelDirectoryPath);
         }
         if (!Directory.Exists(correctCounterSavePath))
         {
@@ -37,7 +38,7 @@ public class LevelSaveManager : MonoBehaviour
         }
 
         sceneName = FlyScoreManager.sceneName;
-        levelSavePath = Path.Combine(levelSavePath, sceneName + ".save");
+        levelSavePath = Path.Combine(levelDirectoryPath, sceneName + ".save");
         correctCounterSavePath = Path.Combine(correctCounterSavePath, "ClassificationCounter.save");
 
         searchHighScore = false;
@@ -50,6 +51,14 @@ public class LevelSaveManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void UpdateLevelPath(string newLevel)
+    {
+        FlyScoreManager.sceneName = newLevel;
+        sceneName = FlyScoreManager.sceneName;
+        levelSavePath = Path.Combine(levelSavePath, sceneName + ".save");
+        LoadData();
     }
 
     public void SaveData()

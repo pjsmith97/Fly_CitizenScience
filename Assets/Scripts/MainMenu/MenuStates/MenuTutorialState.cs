@@ -32,6 +32,8 @@ public class MenuTutorialState : MenuState
 
             else
             {
+
+                menu.mainMenuHelper.tutorialManager.SaveData(true);
                 SceneManager.LoadSceneAsync("ValleyLevel");
             }
         }

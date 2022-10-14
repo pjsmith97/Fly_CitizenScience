@@ -12,7 +12,7 @@ public class MainMenuState : MenuState
         menu.mainMenuHelper.buttons.gameObject.SetActive(true);
         
         EventSystem.current.SetSelectedGameObject(null);
-        EventSystem.current.SetSelectedGameObject(menu.mainMenuHelper.buttonObjects[0]);
+        EventSystem.current.SetSelectedGameObject(menu.mainMenuHelper.buttonObjects[menu.mainMenuHelper.buttonIndex]);
     }
 
     public override void Update()
@@ -30,6 +30,12 @@ public class MainMenuState : MenuState
         {
             menu.mainMenuHelper.tutorialInquiry = false;
             menu.ChangeState(new MenuTutorialState());
+        }
+
+        if (menu.mainMenuHelper.stats)
+        {
+            menu.mainMenuHelper.stats = false;
+            menu.ChangeState(new MenuStatsState());
         }
 
         if (menu.mainMenuHelper.quit)
