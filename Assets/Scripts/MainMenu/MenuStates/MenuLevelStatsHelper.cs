@@ -1,31 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Rewired;
 using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
+using Rewired;
 using TMPro;
 
-public class MenuStatsStateHelper : MonoBehaviour
+public class MenuLevelStatsHelper : MonoBehaviour
 {
     public Player player;
     [SerializeField] private int playerID = 0;
 
     [Header("UI GameObjects")]
     public GameObject statsUI;
+    public TextMeshProUGUI searchText;
+    public TextMeshProUGUI classTimeText;
     public TextMeshProUGUI classCountText;
     public Transform buttons;
     public List<GameObject> buttonObjects;
     public int buttonIndex;
     private int buttonCount;
-    //public bool select;
+    public bool increment;
     public bool back;
-    public bool local;
-    public bool online;
 
     [SerializeField] int incrementSpeed;
     private float incrementTimer = 1;
-
 
     // Start is called before the first frame update
     void Start()
@@ -42,9 +40,8 @@ public class MenuStatsStateHelper : MonoBehaviour
         }
 
         //select = false;
-        local = false;
-        online = false;
         back = false;
+        increment = false;
     }
 
     public void HelperUpdate()
@@ -107,9 +104,7 @@ public class MenuStatsStateHelper : MonoBehaviour
             }
         }
 
-        // Change selected button
-        EventSystem.current.SetSelectedGameObject(null);
-        EventSystem.current.SetSelectedGameObject(buttonObjects[buttonIndex]);
+        increment = true;
 
         // Reset increment timer
         incrementTimer = 0;
@@ -117,17 +112,6 @@ public class MenuStatsStateHelper : MonoBehaviour
 
     public void ButtonAction()
     {
-        if (buttonIndex == 0)
-        {
-            Debug.Log("Local");
-            local = true;
-        }
-        if (buttonIndex == 1)
-        {
-            Debug.Log("Online");
-            online = true;
-        }
-
         if (buttonIndex == 2)
         {
             Debug.Log("MainMenu");

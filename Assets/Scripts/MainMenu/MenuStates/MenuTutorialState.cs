@@ -34,14 +34,14 @@ public class MenuTutorialState : MenuState
             {
 
                 menu.mainMenuHelper.tutorialManager.SaveData(true);
-                SceneManager.LoadSceneAsync("ValleyLevel");
+                SceneManager.LoadSceneAsync(menu.levelChooseHelper.levelName);
             }
         }
 
         if (menu.tutorialStateHelper.back)
         {
             menu.tutorialStateHelper.back = false;
-            menu.ChangeState(new MainMenuState());
+            menu.ChangeState(new MenuChooseLevelState());
         }
     }
 

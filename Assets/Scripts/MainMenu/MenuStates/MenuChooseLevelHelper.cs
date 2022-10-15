@@ -1,33 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 using Rewired;
 
-public class MainMenuStateHelper : MonoBehaviour
+public class MenuChooseLevelHelper : MonoBehaviour
 {
     public Player player;
     [SerializeField] private int playerID = 0;
 
-    [Header("Buttons")]
+    [Header("UI GameObjects")]
+    public GameObject levelUI;
+    public GameObject panelUI;
     public Transform buttons;
     public List<GameObject> buttonObjects;
+    public string levelName;
     public int buttonIndex;
     private int buttonCount;
-    public bool select;
-    public bool quit;
-    public bool stats;
-    public bool levelChoose;
-
-    [SerializeField] int incrementSpeed;
-    private float incrementTimer = 1;
+    public bool increment;
+    public bool back;
+    public bool levelStart;
 
     [Header("Tutorial Serialization")]
     public TutorialSaveManager tutorialManager;
-    //public bool tutorialInquiry;
+    public bool tutorialInquiry;
 
-
+    [SerializeField] int incrementSpeed;
+    private float incrementTimer = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -43,20 +41,20 @@ public class MainMenuStateHelper : MonoBehaviour
             buttonObjects.Add(t.gameObject);
         }
 
-        select = false;
-        //tutorialInquiry = false;
-        quit = false;
-        levelChoose = false;
+        //select = false;
+        back = false;
+        increment = false;
+        levelStart = false;
+        tutorialInquiry = false;
 
         tutorialManager = GetComponent<TutorialSaveManager>();
     }
 
-    // Update is called once per frame
     public void HelperUpdate()
     {
         if (player.GetButtonDown("MenuSelect"))
         {
-            select = true;
+            ButtonAction();
         }
     }
 
@@ -112,9 +110,7 @@ public class MainMenuStateHelper : MonoBehaviour
             }
         }
 
-        // Change selected button
-        EventSystem.current.SetSelectedGameObject(null);
-        EventSystem.current.SetSelectedGameObject(buttonObjects[buttonIndex]);
+        increment = true;
 
         // Reset increment timer
         incrementTimer = 0;
@@ -122,26 +118,22 @@ public class MainMenuStateHelper : MonoBehaviour
 
     public void ButtonAction()
     {
-        if(buttonIndex == 0)
+        if (buttonIndex == buttonCount - 1)
         {
-            levelChoose = true;
-            
-        }
-        if(buttonIndex == 1)
-        {
-            SceneManager.LoadSceneAsync("TutorialLevel");
-        }
-
-        if(buttonIndex == 2)
-        {
-            stats = true;
-        }
-
-        if(buttonIndex == 3)
-        {
-            Debug.Log("Quit");
-            quit = true;
+            Debug.Log("MainMenu");
+            back = true;
             //Application.Quit();
+        }
+        else if(levelName != "")
+        {
+            if (tutorialManager.tutorialSeen)
+            {
+                levelStart = true;
+            }
+            else
+            {
+                tutorialInquiry = true;
+            }
         }
     }
 }

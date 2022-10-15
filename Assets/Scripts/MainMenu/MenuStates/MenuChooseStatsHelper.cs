@@ -1,32 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Rewired;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
-using Rewired;
+using TMPro;
 
-public class MainMenuStateHelper : MonoBehaviour
+public class MenuChooseStatsHelper : MonoBehaviour
 {
     public Player player;
     [SerializeField] private int playerID = 0;
 
-    [Header("Buttons")]
+    [Header("UI GameObjects")]
+    public GameObject statsUI;
+    public TextMeshProUGUI classCountText;
     public Transform buttons;
     public List<GameObject> buttonObjects;
     public int buttonIndex;
     private int buttonCount;
-    public bool select;
-    public bool quit;
-    public bool stats;
-    public bool levelChoose;
+    //public bool select;
+    public bool back;
+    public bool local;
+    public bool online;
 
     [SerializeField] int incrementSpeed;
     private float incrementTimer = 1;
-
-    [Header("Tutorial Serialization")]
-    public TutorialSaveManager tutorialManager;
-    //public bool tutorialInquiry;
-
 
 
     // Start is called before the first frame update
@@ -43,20 +41,17 @@ public class MainMenuStateHelper : MonoBehaviour
             buttonObjects.Add(t.gameObject);
         }
 
-        select = false;
-        //tutorialInquiry = false;
-        quit = false;
-        levelChoose = false;
-
-        tutorialManager = GetComponent<TutorialSaveManager>();
+        //select = false;
+        local = false;
+        online = false;
+        back = false;
     }
 
-    // Update is called once per frame
     public void HelperUpdate()
     {
         if (player.GetButtonDown("MenuSelect"))
         {
-            select = true;
+            ButtonAction();
         }
     }
 
@@ -122,25 +117,21 @@ public class MainMenuStateHelper : MonoBehaviour
 
     public void ButtonAction()
     {
-        if(buttonIndex == 0)
+        if (buttonIndex == 0)
         {
-            levelChoose = true;
-            
+            Debug.Log("Local");
+            local = true;
         }
-        if(buttonIndex == 1)
+        if (buttonIndex == 1)
         {
-            SceneManager.LoadSceneAsync("TutorialLevel");
-        }
-
-        if(buttonIndex == 2)
-        {
-            stats = true;
+            Debug.Log("Online");
+            online = true;
         }
 
-        if(buttonIndex == 3)
+        if (buttonIndex == 2)
         {
-            Debug.Log("Quit");
-            quit = true;
+            Debug.Log("MainMenu");
+            back = true;
             //Application.Quit();
         }
     }

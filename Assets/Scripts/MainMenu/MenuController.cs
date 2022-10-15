@@ -12,7 +12,9 @@ public class MenuController : MonoBehaviour
 
     public MainMenuStateHelper mainMenuHelper;
     public MenuTutorialStateHelper tutorialStateHelper;
-    public MenuStatsStateHelper statsHelper;
+    public MenuChooseStatsHelper statsHelper;
+    public MenuLevelStatsHelper levelStatsHelper;
+    public MenuChooseLevelHelper levelChooseHelper;
 
     public LevelSaveManager saveManager;
     
@@ -24,12 +26,17 @@ public class MenuController : MonoBehaviour
 
         mainMenuHelper = GetComponent<MainMenuStateHelper>();
         tutorialStateHelper = GetComponent<MenuTutorialStateHelper>();
-        statsHelper = GetComponent<MenuStatsStateHelper>();
+        statsHelper = GetComponent<MenuChooseStatsHelper>();
+        levelStatsHelper = GetComponent<MenuLevelStatsHelper>();
+        levelChooseHelper = GetComponent<MenuChooseLevelHelper>();
 
         saveManager = GetComponent<LevelSaveManager>();
 
         mainMenuHelper.buttons.gameObject.SetActive(false);
         statsHelper.statsUI.SetActive(false);
+        levelStatsHelper.statsUI.SetActive(false);
+        levelChooseHelper.levelUI.SetActive(false);
+
 
         ChangeState(new MainMenuState());
     }

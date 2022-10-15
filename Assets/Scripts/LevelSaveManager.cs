@@ -12,6 +12,7 @@ public class LevelSaveManager : MonoBehaviour
     public float finalClassificationTime;
     public int analysisScore;
     public int totalCurrentClassifications;
+    public bool noData;
 
     [Header ("HighScore")]
     public bool classificationHighScore;
@@ -43,6 +44,7 @@ public class LevelSaveManager : MonoBehaviour
 
         searchHighScore = false;
         classificationHighScore = false;
+        noData = false;
 
         LoadData();
     }
@@ -57,7 +59,7 @@ public class LevelSaveManager : MonoBehaviour
     {
         FlyScoreManager.sceneName = newLevel;
         sceneName = FlyScoreManager.sceneName;
-        levelSavePath = Path.Combine(levelSavePath, sceneName + ".save");
+        levelSavePath = Path.Combine(levelDirectoryPath, sceneName + ".save");
         LoadData();
     }
 
@@ -126,6 +128,7 @@ public class LevelSaveManager : MonoBehaviour
         }
 
         Debug.Log("Data Saved");
+        noData = false;
     }
 
     public void LoadData()
@@ -146,6 +149,8 @@ public class LevelSaveManager : MonoBehaviour
             finalSearchingTime = save.levelData["Best Search Time"];
             analysisScore = (int)save.levelData["Best Photo Score"];
             finalClassificationTime = save.levelData["Best Classification Time"];
+            Debug.Log(levelSavePath + " Data Exists");
+            noData = false;
         }
 
         else
@@ -154,6 +159,7 @@ public class LevelSaveManager : MonoBehaviour
             analysisScore = 0;
             finalClassificationTime = 60*60;
             Debug.LogWarning(levelSavePath + " Data doesn't exist");
+            noData = true;
         }
 
         if (File.Exists(correctCounterSavePath))

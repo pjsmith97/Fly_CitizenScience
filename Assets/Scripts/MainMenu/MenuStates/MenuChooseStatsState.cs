@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class MenuStatsState : MenuState
+public class MenuChooseStatsState : MenuState
 {
     public override void Enter(MenuController newMenu)
     {
@@ -30,6 +30,7 @@ public class MenuStatsState : MenuState
         if (menu.statsHelper.local)
         {
             menu.statsHelper.local = false;
+            menu.ChangeState(new MenuLevelStatsState());
         }
 
         if (menu.statsHelper.online)
@@ -56,7 +57,6 @@ public class MenuStatsState : MenuState
         base.Exit();
         EventSystem.current.SetSelectedGameObject(null);
 
-        menu.mainMenuHelper.buttons.gameObject.SetActive(true);
         menu.statsHelper.statsUI.SetActive(false);
     }
 }

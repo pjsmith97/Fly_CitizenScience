@@ -26,16 +26,22 @@ public class MainMenuState : MenuState
             menu.mainMenuHelper.ButtonAction();
         }
 
-        if (menu.mainMenuHelper.tutorialInquiry)
+        if (menu.mainMenuHelper.levelChoose)
+        {
+            menu.mainMenuHelper.levelChoose = false;
+            menu.ChangeState(new MenuChooseLevelState());
+        }
+
+        /*if (menu.mainMenuHelper.tutorialInquiry)
         {
             menu.mainMenuHelper.tutorialInquiry = false;
             menu.ChangeState(new MenuTutorialState());
-        }
+        }*/
 
         if (menu.mainMenuHelper.stats)
         {
             menu.mainMenuHelper.stats = false;
-            menu.ChangeState(new MenuStatsState());
+            menu.ChangeState(new MenuChooseStatsState());
         }
 
         if (menu.mainMenuHelper.quit)
