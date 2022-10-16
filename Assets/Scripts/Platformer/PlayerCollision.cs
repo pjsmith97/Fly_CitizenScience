@@ -194,6 +194,12 @@ public class PlayerCollision : MonoBehaviour
             return Hit.point;
         }
 
+        RayPos = transform.position + (transform.forward * ForwardLedgeCheckPos * 0.725f) + (transform.up * UpwardLedgeCheckPos);
+        if (Physics.Raycast(RayPos, -transform.up, out Hit, LedgeCheckDistance, LedgeGrabLayers))
+        {
+            return Hit.point;
+        }
+
         return Vector3.zero;
     }
 
@@ -211,6 +217,9 @@ public class PlayerCollision : MonoBehaviour
         Gizmos.color = Color.cyan;
         Vector3 pos3 = transform.position + (transform.forward * ForwardLedgeCheckPos) + (transform.up * UpwardLedgeCheckPos);
         Gizmos.DrawLine(pos3, pos3 - (transform.up) * LedgeCheckDistance);
+
+        Vector3 pos4 = transform.position + (transform.forward * ForwardLedgeCheckPos*0.725f) + (transform.up * UpwardLedgeCheckPos);
+        Gizmos.DrawLine(pos4, pos4 - (transform.up) * LedgeCheckDistance);
     }
 
     private void OnDrawGizmos()
@@ -218,15 +227,19 @@ public class PlayerCollision : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawLine(GetComponent<PlayerMovement>().HeadCam.transform.position,
             GetComponent<PlayerMovement>().HeadCam.transform.position + 
-            GetComponent<PlayerMovement>().HeadCam.transform.right * 100);
+            GetComponent<PlayerMovement>().HeadCam.transform.forward * 100);
 
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(GetComponent<PlayerMovement>().HeadCam.transform.position,
+            GetComponent<PlayerMovement>().HeadCam.transform.position +
+            collisionCamForward * 100);
 
         onDrawCamRight = GetComponent<PlayerMovement>().HeadCam.transform.right;
 
         Gizmos.color = Color.green;
         Gizmos.DrawLine(GetComponent<PlayerMovement>().HeadCam.transform.position,
             GetComponent<PlayerMovement>().HeadCam.transform.position +
-            camWallRight * 10);
+            camWallRight * 100);
     }
 
     // Start is called before the first frame update
