@@ -16,6 +16,7 @@ public class MenuChooseStatsHelper : MonoBehaviour
     public TextMeshProUGUI classCountText;
     public Transform buttons;
     public List<GameObject> buttonObjects;
+    public TextMeshProUGUI soonText;
     public int buttonIndex;
     private int buttonCount;
     //public bool select;
@@ -105,6 +106,15 @@ public class MenuChooseStatsHelper : MonoBehaviour
             {
                 buttonIndex--;
             }
+        }
+
+        if(buttonIndex == 1)
+        {
+            soonText.gameObject.SetActive(true);
+        }
+        else if(soonText.gameObject.activeSelf)
+        {
+            soonText.gameObject.SetActive(false);
         }
 
         // Change selected button

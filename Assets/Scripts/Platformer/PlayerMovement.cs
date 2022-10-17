@@ -158,6 +158,14 @@ public class PlayerMovement : MonoBehaviour
             {
                 InAir();
             }
+
+            Vector3 newLedge = Collision.CheckLedges();
+            if (newLedge != Vector3.zero)
+            {
+                OriginForward = transform.forward;
+                LedgeGrab(newLedge);
+                //Debug.Log("Grab!");
+            }
         }
         else if (CurrentState == PlayerStates.airborne)
         {
@@ -219,7 +227,9 @@ public class PlayerMovement : MonoBehaviour
             if (player.GetButtonDown("Jump"))
             {
                 WallJump();
+                //Vector3 camDir = HeadCam.transform.forward;
                 ResetObjectRotation();
+                //transform.r
                 return;
             }
 
@@ -644,6 +654,8 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 levelForward = new Vector3(HeadCam.transform.forward.x, 0, HeadCam.transform.forward.z);
         transform.forward = Quaternion.FromToRotation(transform.forward, levelForward) * transform.forward;
+        XTurn = 0;
+        HeadCam.transform.localRotation = Quaternion.Euler(XTurn, 0, 0);
         //Debug.Log("Reset Object Rotation");
     }
 

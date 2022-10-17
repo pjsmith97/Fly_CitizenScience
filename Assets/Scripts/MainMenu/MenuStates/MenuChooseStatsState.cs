@@ -14,6 +14,7 @@ public class MenuChooseStatsState : MenuState
         EventSystem.current.SetSelectedGameObject(null);
 
         menu.statsHelper.statsUI.SetActive(true);
+        menu.statsHelper.soonText.gameObject.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(menu.statsHelper.buttonObjects[menu.statsHelper.buttonIndex]);
         
