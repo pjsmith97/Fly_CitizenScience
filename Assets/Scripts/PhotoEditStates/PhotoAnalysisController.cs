@@ -47,6 +47,7 @@ public class PhotoAnalysisController : MonoBehaviour
         finalStateHelper = GetComponent<PhotoFinalResultStateHelper>();
 
         decisionStateHelper.decisionUI.SetActive(false);
+        decisionStateHelper.hintUI.SetActive(false);
 
         solutionStateHelper.solutionUI.SetActive(false);
 

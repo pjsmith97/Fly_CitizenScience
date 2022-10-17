@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Rewired;
+using TMPro;
 
 
 public class PhotoDecisionStateHelper : MonoBehaviour
@@ -17,6 +18,7 @@ public class PhotoDecisionStateHelper : MonoBehaviour
 
     public bool done = false;
     public bool back = false;
+    public bool hint = false;
 
     public Dictionary<string, GameObject> buttonOptions;
     public Dictionary<int, string> buttonIndexOptions;
@@ -40,6 +42,8 @@ public class PhotoDecisionStateHelper : MonoBehaviour
     public GameObject decisionUI;
     public GameObject symbolsUI;
     public GameObject textUI;
+    public TextMeshProUGUI helpText;
+    public GameObject hintUI;
     public int symbolIndex;
     [SerializeField] private float likelyAlpha;
     [SerializeField] private float symbolAlphaSpeed;
@@ -104,73 +108,90 @@ public class PhotoDecisionStateHelper : MonoBehaviour
     // Update is called once per frame
     public void HelperUpdate()
     {
-        if (player.GetButtonDown("Select"))
+        if (!hint)
         {
-            done = true;
-            //var sendTask = photoManager.SendSpiPollInfo(buttonIndexOptions[buttonIndex], (int) guessingTimer);
+            if (player.GetButtonDown("Select"))
+            {
+                done = true;
+                //var sendTask = photoManager.SendSpiPollInfo(buttonIndexOptions[buttonIndex], (int) guessingTimer);
+            }
+
+            else if (player.GetButtonDown("Back"))
+            {
+                back = true;
+            }
+
+            else if (player.GetButtonDown("Help"))
+            {
+                hint = true;
+                hintUI.SetActive(true);
+            }
         }
 
-        else if (player.GetButtonDown("Back"))
+        else if (player.GetButtonDown("Help"))
         {
-            back = true;
+            hint = false;
+            hintUI.SetActive(false);
         }
     }
 
     public void HelperFixedUpdate()
     {
-        float Del = Time.deltaTime;
-        float leftStickVal = player.GetAxis("ButtonSelection");
-
-        guessingTimer += Del;
-
-        if(leftStickVal > 0.1 || leftStickVal < -0.1)
+        if (!hint)
         {
-            if(incrementTimer == 1)
+            float Del = Time.deltaTime;
+            float leftStickVal = player.GetAxis("ButtonSelection");
+
+            guessingTimer += Del;
+
+            if (leftStickVal > 0.1 || leftStickVal < -0.1)
             {
-                // If this a positive or negative increment
-                bool posIncrement;
-
-                // Increment button index appropriately to the input
-                if(leftStickVal > 0)
+                if (incrementTimer == 1)
                 {
-                    posIncrement = true;
-                }
-                else
-                {
-                    posIncrement = false;
+                    // If this a positive or negative increment
+                    bool posIncrement;
+
+                    // Increment button index appropriately to the input
+                    if (leftStickVal > 0)
+                    {
+                        posIncrement = true;
+                    }
+                    else
+                    {
+                        posIncrement = false;
+                    }
+
+                    IncrementButton(posIncrement);
                 }
 
-                IncrementButton(posIncrement);
+                incrementTimer += incrementSpeed * Del;
             }
 
-            incrementTimer += incrementSpeed * Del;
-        }
+            else
+            {
+                incrementTimer = 1;
+            }
 
-        else
-        {
-            incrementTimer = 1;
-        }
+            // Set up symbol image alpha fade in
+            if (likelySymbol)
+            {
+                symbolMaxAlpha = likelyAlpha;
+            }
 
-        // Set up symbol image alpha fade in
-        if (likelySymbol)
-        {
-            symbolMaxAlpha = likelyAlpha;
-        }
+            else
+            {
+                symbolMaxAlpha = 1;
+            }
 
-        else
-        {
-            symbolMaxAlpha = 1;
-        }
+            if (symbolIndexOptions[symbolIndex].GetComponent<RawImage>().color.a < symbolMaxAlpha)
+            {
+                var tempColor = symbolIndexOptions[symbolIndex].GetComponent<RawImage>().color;
+                tempColor.a = Mathf.Lerp(0, symbolMaxAlpha, symbolAlphaTimer);
+                symbolIndexOptions[symbolIndex].GetComponent<RawImage>().color = tempColor;
 
-        if(symbolIndexOptions[symbolIndex].GetComponent<RawImage>().color.a < symbolMaxAlpha)
-        {
-            var tempColor = symbolIndexOptions[symbolIndex].GetComponent<RawImage>().color;
-            tempColor.a = Mathf.Lerp(0, symbolMaxAlpha, symbolAlphaTimer);
-            symbolIndexOptions[symbolIndex].GetComponent<RawImage>().color = tempColor;
-
-            symbolAlphaTimer += symbolAlphaSpeed * Del;
+                symbolAlphaTimer += symbolAlphaSpeed * Del;
+            }
         }
-        
     }
 
     public void SetSymbolFadeTimer(float newTime)
