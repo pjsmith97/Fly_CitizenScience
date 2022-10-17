@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Rewired;
+using Kino;
 
 public class MenuChooseLevelHelper : MonoBehaviour
 {
@@ -19,6 +20,11 @@ public class MenuChooseLevelHelper : MonoBehaviour
     public bool increment;
     public bool back;
     public bool levelStart;
+    public bool glitching;
+
+    [Header("Glitch Transition")]
+    public DigitalGlitch dgtGlitch;
+    public AnalogGlitch anGlitch;
 
     [Header("Tutorial Serialization")]
     public TutorialSaveManager tutorialManager;
@@ -46,6 +52,7 @@ public class MenuChooseLevelHelper : MonoBehaviour
         increment = false;
         levelStart = false;
         tutorialInquiry = false;
+        glitching = false;
 
         tutorialManager = GetComponent<TutorialSaveManager>();
     }
