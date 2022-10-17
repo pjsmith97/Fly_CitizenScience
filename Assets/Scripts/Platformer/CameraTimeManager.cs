@@ -11,7 +11,7 @@ public class CameraTimeManager : MonoBehaviour
 
     [SerializeField] private float slowMoScale;
 
-    private bool newScene;
+    public bool newScene;
 
     // Start is called before the first frame update
     void Start()

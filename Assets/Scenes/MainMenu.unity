@@ -2616,7 +2616,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Total Classifications
+  m_text: Total Fly Classifications
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 09641d4e2cb13c841832ed2ece877cbd, type: 2}
   m_sharedMaterial: {fileID: 2265102632574794848, guid: 09641d4e2cb13c841832ed2ece877cbd, type: 2}
