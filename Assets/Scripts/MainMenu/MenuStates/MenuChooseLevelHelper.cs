@@ -13,6 +13,7 @@ public class MenuChooseLevelHelper : MonoBehaviour
     public GameObject levelUI;
     public GameObject panelUI;
     public Transform buttons;
+    public GameObject parentUI;
     public List<GameObject> buttonObjects;
     public string levelName;
     public int buttonIndex;
@@ -25,6 +26,8 @@ public class MenuChooseLevelHelper : MonoBehaviour
     [Header("Glitch Transition")]
     public DigitalGlitch dgtGlitch;
     public AnalogGlitch anGlitch;
+    [Range(0f, 2f)]
+    public float glitchCap;
 
     [Header("Tutorial Serialization")]
     public TutorialSaveManager tutorialManager;
@@ -96,6 +99,14 @@ public class MenuChooseLevelHelper : MonoBehaviour
         else
         {
             incrementTimer = 1;
+        }
+
+        if (glitching)
+        {
+            anGlitch.scanLineJitter += Del;
+            anGlitch.verticalJump += Del;
+            dgtGlitch.intensity += Del;
+            
         }
 
     }

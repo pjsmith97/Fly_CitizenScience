@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Rewired;
 using TMPro;
+using Kino;
 using UnityEngine.EventSystems;
 
 public class MenuTutorialStateHelper : MonoBehaviour
@@ -18,6 +19,13 @@ public class MenuTutorialStateHelper : MonoBehaviour
 
     [Header ("Ui State")]
     public MainMenuTutorialUIState tutorialUIState;
+
+    [Header("Glitch Transition")]
+    public DigitalGlitch dgtGlitch;
+    public AnalogGlitch anGlitch;
+    [Range(0f, 2f)]
+    public float glitchCap;
+    public bool glitching;
 
     public float panelGrowthTimer;
     public float uiAlphaTimer;
@@ -46,6 +54,8 @@ public class MenuTutorialStateHelper : MonoBehaviour
             //child.gameObject.SetActive(false);
             i++;
         }
+
+        glitching = false;
 
         buttonIndex = 1;
 

@@ -1078,6 +1078,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerID: 0
+  parentUI: {fileID: 1350002388254095335}
   buttons: {fileID: 1457898868}
   buttonObjects: []
   buttonIndex: 0
@@ -1085,6 +1086,10 @@ MonoBehaviour:
   quit: 0
   stats: 0
   levelChoose: 0
+  glitching: 0
+  dgtGlitch: {fileID: 184092835}
+  anGlitch: {fileID: 184092834}
+  glitchCap: 0.9
   incrementSpeed: 0
   tutorialManager: {fileID: 0}
 --- !u!114 &222258873
@@ -1136,6 +1141,10 @@ MonoBehaviour:
   buttonsUI: {fileID: 1178434749}
   headerTextUI: {fileID: 1057392608}
   uiButtonGameObjects: []
+  dgtGlitch: {fileID: 184092835}
+  anGlitch: {fileID: 184092834}
+  glitchCap: 0.9
+  glitching: 0
   panelGrowthTimer: 0
   uiAlphaTimer: 0
   buttonIndex: 0
@@ -1237,6 +1246,7 @@ MonoBehaviour:
   levelUI: {fileID: 1728686979}
   panelUI: {fileID: 1357928138}
   buttons: {fileID: 1819411678}
+  parentUI: {fileID: 1350002388254095335}
   buttonObjects: []
   levelName: 
   buttonIndex: 0
@@ -1244,8 +1254,9 @@ MonoBehaviour:
   back: 0
   levelStart: 0
   glitching: 0
-  dgtGlitch: {fileID: 0}
-  anGlitch: {fileID: 0}
+  dgtGlitch: {fileID: 184092835}
+  anGlitch: {fileID: 184092834}
+  glitchCap: 0.9
   tutorialManager: {fileID: 0}
   tutorialInquiry: 0
   incrementSpeed: 0
@@ -4769,7 +4780,7 @@ MonoBehaviour:
   sounds:
   - name: Theme
     clip: {fileID: 8300000, guid: 7a445d4c4b685774d966bc4b662be813, type: 3}
-    volume: 0.25
+    volume: 0.15
     volumeVariance: 0
     pitch: 1
     pitchVariance: 0
@@ -5826,7 +5837,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Project: Fly Catcher'
+  m_text: Project Fly Catcher
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 09641d4e2cb13c841832ed2ece877cbd, type: 2}
   m_sharedMaterial: {fileID: 2265102632574794848, guid: 09641d4e2cb13c841832ed2ece877cbd, type: 2}

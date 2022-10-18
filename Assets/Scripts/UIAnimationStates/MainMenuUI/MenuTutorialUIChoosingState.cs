@@ -67,5 +67,13 @@ public class MenuTutorialUIChoosingState : MainMenuTutorialUIState
         {
             menuHelper.incrementTimer = 1;
         }
+
+        if (menuHelper.glitching)
+        {
+            menuHelper.anGlitch.scanLineJitter += Del;
+            menuHelper.anGlitch.verticalJump += Del;
+            menuHelper.dgtGlitch.intensity += Del;
+
+        }
     }
 }

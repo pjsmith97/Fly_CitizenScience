@@ -4,11 +4,14 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using Rewired;
+using Kino;
 
 public class MainMenuStateHelper : MonoBehaviour
 {
     public Player player;
     [SerializeField] private int playerID = 0;
+
+    public GameObject parentUI;
 
     [Header("Buttons")]
     public Transform buttons;
@@ -19,6 +22,13 @@ public class MainMenuStateHelper : MonoBehaviour
     public bool quit;
     public bool stats;
     public bool levelChoose;
+    public bool glitching;
+
+    [Header("Glitch Transition")]
+    public DigitalGlitch dgtGlitch;
+    public AnalogGlitch anGlitch;
+    [Range(0f, 2f)]
+    public float glitchCap;
 
     [SerializeField] int incrementSpeed;
     private float incrementTimer = 1;
@@ -47,6 +57,7 @@ public class MainMenuStateHelper : MonoBehaviour
         //tutorialInquiry = false;
         quit = false;
         levelChoose = false;
+        glitching = false;
 
         tutorialManager = GetComponent<TutorialSaveManager>();
     }
@@ -57,6 +68,17 @@ public class MainMenuStateHelper : MonoBehaviour
         if (player.GetButtonDown("MenuSelect"))
         {
             select = true;
+        }
+
+        if (glitching)
+        {
+            if (anGlitch.scanLineJitter >= glitchCap &&
+                anGlitch.verticalJump >= glitchCap &&
+                dgtGlitch.intensity >= glitchCap)
+            {
+                glitching = false;
+                SceneManager.LoadSceneAsync("TutorialLevel");
+            }
         }
     }
 
@@ -92,7 +114,14 @@ public class MainMenuStateHelper : MonoBehaviour
         {
             incrementTimer = 1;
         }
+        
+        if (glitching)
+        {
+            anGlitch.scanLineJitter += Del;
+            anGlitch.verticalJump += Del;
+            dgtGlitch.intensity += Del;
 
+        }
     }
 
     private void IncrementButton(bool positiveIncrement)
@@ -129,7 +158,9 @@ public class MainMenuStateHelper : MonoBehaviour
         }
         if(buttonIndex == 1)
         {
-            SceneManager.LoadSceneAsync("TutorialLevel");
+            glitching = true;
+            parentUI.SetActive(false);
+            //SceneManager.LoadSceneAsync("TutorialLevel");
         }
 
         if(buttonIndex == 2)

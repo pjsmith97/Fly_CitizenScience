@@ -47,7 +47,9 @@ public class MenuChooseLevelState : MenuState
         if (menu.levelChooseHelper.levelStart)
         {
             menu.levelChooseHelper.levelStart = false;
-            SceneManager.LoadSceneAsync(menu.levelChooseHelper.levelName);
+            menu.levelChooseHelper.glitching = true;
+            menu.levelChooseHelper.parentUI.SetActive(false);
+            //SceneManager.LoadSceneAsync(menu.levelChooseHelper.levelName);
         }
 
         if (menu.levelChooseHelper.back)
@@ -55,6 +57,17 @@ public class MenuChooseLevelState : MenuState
             menu.levelChooseHelper.back = false;
 
             menu.ChangeState(new MainMenuState());
+        }
+
+        if (menu.levelChooseHelper.glitching)
+        {
+            if (menu.levelChooseHelper.anGlitch.scanLineJitter >= menu.levelChooseHelper.glitchCap &&
+                menu.levelChooseHelper.anGlitch.verticalJump >= menu.levelChooseHelper.glitchCap &&
+                menu.levelChooseHelper.dgtGlitch.intensity >= menu.levelChooseHelper.glitchCap)
+            {
+                menu.levelChooseHelper.glitching = false;
+                SceneManager.LoadSceneAsync(menu.levelChooseHelper.levelName);
+            }
         }
     }
 

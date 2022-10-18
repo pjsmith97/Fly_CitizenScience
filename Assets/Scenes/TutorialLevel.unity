@@ -421,8 +421,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c29cada0497b57e4f8e2fc815c4bc3d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerID: 0
   respawnPt: {fileID: 1127585801}
-  player: {fileID: 289882}
+  playerObject: {fileID: 289882}
+  glitchCap: 0.9
+  dgtGlitch: {fileID: 332285867}
+  anGlitch: {fileID: 332285866}
+  incrementSpeed: 2
+  glitching: 0
+  recovering: 0
 --- !u!114 &56816894
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2337,6 +2344,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3cfbd3bf15210ed4d96ebee9902ee877, type: 3}
+--- !u!114 &332285866 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4453686911642349482, guid: 3cfbd3bf15210ed4d96ebee9902ee877, type: 3}
+  m_PrefabInstance: {fileID: 332285865}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 870b9a8f0f82f4f56800cc427bcd1025, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &332285867 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4919254317870638614, guid: 3cfbd3bf15210ed4d96ebee9902ee877, type: 3}
+  m_PrefabInstance: {fileID: 332285865}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a3a070408aa941ab83ae10be1708848, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &344317035
 GameObject:
   m_ObjectHideFlags: 0

@@ -24,8 +24,9 @@ public class MenuTutorialState : MenuState
         if (menu.tutorialStateHelper.done)
         {
             menu.tutorialStateHelper.done = false;
+            menu.tutorialStateHelper.glitching = true;
 
-            if (menu.tutorialStateHelper.buttonIndex == 0)
+            /*if (menu.tutorialStateHelper.buttonIndex == 0)
             {
                 SceneManager.LoadSceneAsync("TutorialLevel");
             }
@@ -35,7 +36,7 @@ public class MenuTutorialState : MenuState
 
                 menu.mainMenuHelper.tutorialManager.SaveData(true);
                 SceneManager.LoadSceneAsync(menu.levelChooseHelper.levelName);
-            }
+            }*/
         }
 
         if (menu.tutorialStateHelper.back)
@@ -49,6 +50,24 @@ public class MenuTutorialState : MenuState
     {
         base.FixedUpdate();
         menu.tutorialStateHelper.HelperFixedUpdate();
+
+        if (menu.tutorialStateHelper.anGlitch.scanLineJitter >= menu.tutorialStateHelper.glitchCap &&
+                menu.tutorialStateHelper.anGlitch.verticalJump >= menu.tutorialStateHelper.glitchCap &&
+                menu.tutorialStateHelper.dgtGlitch.intensity >= menu.tutorialStateHelper.glitchCap)
+        {
+            menu.tutorialStateHelper.glitching = false;
+
+            if (menu.tutorialStateHelper.buttonIndex == 0)
+            {
+                SceneManager.LoadScene("TutorialLevel");
+            }
+
+            else
+            {
+                menu.mainMenuHelper.tutorialManager.SaveData(true);
+                SceneManager.LoadScene(menu.levelChooseHelper.levelName);
+            }
+        }
     }
 
     public override void Exit()
