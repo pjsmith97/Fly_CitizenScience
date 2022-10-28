@@ -129,18 +129,18 @@ public class MenuChooseStatsHelper : MonoBehaviour
     {
         if (buttonIndex == 0)
         {
-            Debug.Log("Local");
+            //Debug.Log("Local");
             local = true;
         }
         if (buttonIndex == 1)
         {
-            Debug.Log("Online");
+            //Debug.Log("Online");
             online = true;
         }
 
         if (buttonIndex == 2)
         {
-            Debug.Log("MainMenu");
+            //Debug.Log("MainMenu");
             back = true;
             //Application.Quit();
         }

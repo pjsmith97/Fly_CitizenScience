@@ -22,6 +22,7 @@ public class PhotoManager : MonoBehaviour
     public string playerGroup = "playergroup";
 
     private PhotoAnalysisController analysisController;
+    public bool loadingPhoto;
 
     // Start is called before the first frame update
     void Start()
@@ -42,10 +43,12 @@ public class PhotoManager : MonoBehaviour
         requestApiBody.player = new ExpandoObject();
         requestApiBody.player.accountCode = playerCode;
 
+        analysisController = GetComponent<PhotoAnalysisController>();
+
         var spiPollTask = GetSpiPollInfo();
         //photoURL = spiPollTask.Result;
 
-        analysisController = GetComponent<PhotoAnalysisController>();
+        loadingPhoto = false;
     }
 
     // Update is called once per frame
@@ -57,6 +60,7 @@ public class PhotoManager : MonoBehaviour
     private IEnumerator GetTexture()
     {
         UnityWebRequest request = UnityWebRequestTexture.GetTexture(photoURL);
+        Debug.Log("getting texture");
 
         yield return request.SendWebRequest();
         if(request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError
@@ -76,15 +80,24 @@ public class PhotoManager : MonoBehaviour
     public async Task GetSpiPollInfo()
     {
         Debug.Log("Getting Photo!");
+        loadingPhoto = true;
+        analysisController.editingStateHelper.loadingUI.SetActive(true);
+
         await MMOSPortalGetPhoto();
         //await mmosTask;
         StartCoroutine(GetTexture());
         //return currentImageURL;
+
+        Debug.Log("Stop loading");
+        loadingPhoto = false;
+        analysisController.editingStateHelper.loadingUI.SetActive(false);
     }
 
     private async Task MMOSPortalGetPhoto()
     {
         dynamic response = null;
+
+        Debug.Log("try start");
 
         try
         {
@@ -121,6 +134,7 @@ public class PhotoManager : MonoBehaviour
                 responseBody = response["body"];
             }
 
+            Debug.Log("response body assets");
             photoURL = (string)responseBody["task"]["assets"]["url"];
             currentTaskID = (int)responseBody["task"]["id"];
             Debug.Log(photoURL);
@@ -183,8 +197,8 @@ public class PhotoManager : MonoBehaviour
             var responseBody = response["body"];
 
             //currentTaskID = (int)responseBody["task"]["id"];
-            Debug.Log("uid: " + (string)responseBody["uid"]);
-            Debug.Log("Score: " + (string)responseBody["score"]);
+            //Debug.Log("uid: " + (string)responseBody["uid"]);
+            //Debug.Log("Score: " + (string)responseBody["score"]);
             //Debug.Log("Result Reliability: " + (string)responseBody["reliability"]);
 
             if(responseBody["task"]["solution"] != null)

@@ -42,6 +42,7 @@ public class PhotoDecisionStateHelper : MonoBehaviour
     public GameObject decisionUI;
     public GameObject symbolsUI;
     public GameObject textUI;
+    public TextMeshProUGUI timerText;
     public TextMeshProUGUI helpText;
     public GameObject hintUI;
     public int symbolIndex;
@@ -143,6 +144,16 @@ public class PhotoDecisionStateHelper : MonoBehaviour
             float leftStickVal = player.GetAxis("ButtonSelection");
 
             guessingTimer += Del;
+
+            int timerMinuteNum = Mathf.FloorToInt(guessingTimer / 60);
+            int timerSecondNum = Mathf.FloorToInt(guessingTimer % 60);
+            string timerMinute = timerMinuteNum < 10 ? "0" + timerMinuteNum : "" + timerMinuteNum;
+            string timerSecond = timerSecondNum < 10 ? "0" + timerSecondNum : "" + timerSecondNum;
+
+            string timerString = timerMinute + ":" + timerSecond;
+
+            timerText.text = timerString;
+
 
             if (leftStickVal > 0.1 || leftStickVal < -0.1)
             {

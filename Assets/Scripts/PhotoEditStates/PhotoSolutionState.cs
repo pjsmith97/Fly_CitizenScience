@@ -83,6 +83,8 @@ public class PhotoSolutionState : PhotoAnalysisState
         photoAnalysis.editingStateHelper.rightSlider.value = 0;
         photoAnalysis.editingStateHelper.rotationGauge.fillAmount = 0;
 
+        photoAnalysis.decisionStateHelper.guessingTimer = 0;
+
         photoAnalysis.editingStateHelper.player.controllers.maps.SetMapsEnabled(false, "PhotoDecision");
 
         photoAnalysis.ChangeState(new PhotoEditingState());

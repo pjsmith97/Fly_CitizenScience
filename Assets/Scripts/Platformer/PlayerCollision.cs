@@ -152,7 +152,7 @@ public class PlayerCollision : MonoBehaviour
             wallDir = rayDir;
 
 
-            Debug.Log(GetComponent<PlayerMovement>().CurrentWallRunState);
+            //Debug.Log(GetComponent<PlayerMovement>().CurrentWallRunState);
 
             camWallRight = GetComponent<PlayerMovement>().HeadCam.transform.right;
             dot = Vector3.Dot(rayDir, GetComponent<PlayerMovement>().HeadCam.transform.right);
@@ -224,7 +224,7 @@ public class PlayerCollision : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
+       /* Gizmos.color = Color.red;
         Gizmos.DrawLine(GetComponent<PlayerMovement>().HeadCam.transform.position,
             GetComponent<PlayerMovement>().HeadCam.transform.position + 
             GetComponent<PlayerMovement>().HeadCam.transform.forward * 100);
@@ -239,7 +239,7 @@ public class PlayerCollision : MonoBehaviour
         Gizmos.color = Color.green;
         Gizmos.DrawLine(GetComponent<PlayerMovement>().HeadCam.transform.position,
             GetComponent<PlayerMovement>().HeadCam.transform.position +
-            camWallRight * 100);
+            camWallRight * 100);*/
     }
 
     // Start is called before the first frame update

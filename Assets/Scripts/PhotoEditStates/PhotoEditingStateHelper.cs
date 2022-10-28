@@ -11,6 +11,8 @@ public class PhotoEditingStateHelper : MonoBehaviour
 
     [Header("Fly Photo")]
     public Image flyPhoto;
+    public GameObject loadingUI;
+    public PhotoManager photoManager;
 
     [Header("Sliders")]
     private float leftSlideSpeed;
@@ -34,6 +36,8 @@ public class PhotoEditingStateHelper : MonoBehaviour
     void Start()
     {
         player = ReInput.players.GetPlayer(playerID);
+
+        photoManager = GetComponent<PhotoManager>();
 
         // Set Slider Values, Max, and Min
         leftSlider.value = 0;
@@ -75,77 +79,84 @@ public class PhotoEditingStateHelper : MonoBehaviour
             flyPhoto.transform.rotation *= Quaternion.Euler(0, 0, 360 * 0.25f);
         }*/
 
-        if (player.GetButtonDown("Finish"))
+        if (!photoManager.loadingPhoto)
         {
-            //var sendTask = photoManager.SendSpiPollInfo("male", 1000);
-            done = true;
+            if (player.GetButtonDown("Finish"))
+            {
+                //var sendTask = photoManager.SendSpiPollInfo("male", 1000);
+                done = true;
+            }
         }
     }
 
     public void HelperFixedUpdate()
     {
-        float Del = Time.deltaTime;
-        float leftStickVal = player.GetAxis("LeftSlider");
-        float rightStickVal = player.GetAxis("RightSlider");
 
-        // Calculate analog stick input and apply it to the sliders
-        if (leftStickVal > 0)
+        if (!photoManager.loadingPhoto)
         {
-            leftSlideSpeed = Mathf.Lerp(0, maxSlideSpeed, leftStickVal);
-            leftSlider.value += leftSlideSpeed * Del;
-            if (leftSlider.value > slideMax)
-            {
-                leftSlider.value = slideMax;
-            }
-        }
-        else
-        {
-            leftSlideSpeed = Mathf.Lerp(0, -maxSlideSpeed, Mathf.Abs(leftStickVal));
-            leftSlider.value += leftSlideSpeed * Del;
-            if (leftSlider.value < slideMin)
-            {
-                leftSlider.value = slideMin;
-            }
-        }
+            float Del = Time.deltaTime;
+            float leftStickVal = player.GetAxis("LeftSlider");
+            float rightStickVal = player.GetAxis("RightSlider");
 
-        if (rightStickVal > 0)
-        {
-            rightSlideSpeed = Mathf.Lerp(0, maxSlideSpeed, rightStickVal);
-            rightSlider.value += rightSlideSpeed * Del;
-            if (rightSlider.value > slideMax)
+            // Calculate analog stick input and apply it to the sliders
+            if (leftStickVal > 0)
             {
-                rightSlider.value = slideMax;
+                leftSlideSpeed = Mathf.Lerp(0, maxSlideSpeed, leftStickVal);
+                leftSlider.value += leftSlideSpeed * Del;
+                if (leftSlider.value > slideMax)
+                {
+                    leftSlider.value = slideMax;
+                }
             }
-        }
-        else
-        {
-            rightSlideSpeed = Mathf.Lerp(0, -maxSlideSpeed, Mathf.Abs(rightStickVal));
-            rightSlider.value += rightSlideSpeed * Del;
-            if (rightSlider.value < slideMin)
+            else
             {
-                rightSlider.value = slideMin;
-            }
-        }
-
-        // Check for rotator inputs and apply them to progression bar
-        if (player.GetButton("RotateRight"))
-        {
-            if (rotationGauge.fillAmount == 0)
-            {
-                rotationGauge.fillAmount = 1f;
+                leftSlideSpeed = Mathf.Lerp(0, -maxSlideSpeed, Mathf.Abs(leftStickVal));
+                leftSlider.value += leftSlideSpeed * Del;
+                if (leftSlider.value < slideMin)
+                {
+                    leftSlider.value = slideMin;
+                }
             }
 
-            rotationGauge.fillAmount -= maxSlideSpeed * Del;
-        }
-
-        if (player.GetButton("RotateLeft"))
-        {
-            rotationGauge.fillAmount += maxSlideSpeed * Del;
-
-            if (rotationGauge.fillAmount >= 1)
+            if (rightStickVal > 0)
             {
-                rotationGauge.fillAmount -= 1;
+                rightSlideSpeed = Mathf.Lerp(0, maxSlideSpeed, rightStickVal);
+                rightSlider.value += rightSlideSpeed * Del;
+                if (rightSlider.value > slideMax)
+                {
+                    rightSlider.value = slideMax;
+                }
+            }
+            else
+            {
+                rightSlideSpeed = Mathf.Lerp(0, -maxSlideSpeed, Mathf.Abs(rightStickVal));
+                rightSlider.value += rightSlideSpeed * Del;
+                if (rightSlider.value < slideMin)
+                {
+                    rightSlider.value = slideMin;
+                }
+            }
+
+            // Check for rotator inputs and apply them to progression bar
+            if (player.GetButton("RotateRight"))
+            {
+                if (rotationGauge.fillAmount == 0)
+                {
+                    rotationGauge.fillAmount = 1f;
+                }
+
+                rotationGauge.fillAmount -= maxSlideSpeed * Del;
+            }
+
+            if (player.GetButton("RotateLeft"))
+            {
+                rotationGauge.fillAmount += maxSlideSpeed * Del;
+
+                if (rotationGauge.fillAmount >= 1)
+                {
+                    rotationGauge.fillAmount -= 1;
+                }
             }
         }
-    }
+    } 
 }

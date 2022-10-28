@@ -1,9 +1,12 @@
 using UnityEngine.Audio;
 using System;
 using UnityEngine;
+using Rewired;
 
 public class AudioManager : MonoBehaviour
 {
+	public Player player;
+	[SerializeField] private int playerID = 0;
 
 	public static AudioManager instance;
 
@@ -36,7 +39,16 @@ public class AudioManager : MonoBehaviour
     private void Start()
     {
 		Play("Theme");
-    }
+		player = ReInput.players.GetPlayer(playerID);
+	}
+
+    private void Update()
+    {
+		if (player.GetButtonDown("ToggleMusic"))
+		{
+			ToggleMusic();
+		}
+	}
 
     public void Play(string sound)
 	{
@@ -53,4 +65,37 @@ public class AudioManager : MonoBehaviour
 		s.source.Play();
 	}
 
+	public void Stop(string sound)
+	{
+		Sound s = Array.Find(sounds, item => item.name == sound);
+		if (s == null)
+		{
+			Debug.LogWarning("Sound: " + name + " not found!");
+			return;
+		}
+
+		s.source.volume = s.volume * (1f + UnityEngine.Random.Range(-s.volumeVariance / 2f, s.volumeVariance / 2f));
+		s.source.pitch = s.pitch * (1f + UnityEngine.Random.Range(-s.pitchVariance / 2f, s.pitchVariance / 2f));
+
+		s.source.Stop();
+	}
+
+	private void ToggleMusic()
+    {
+		Sound s = Array.Find(sounds, item => item.name == "Theme");
+		if (s == null)
+		{
+			Debug.LogWarning("Sound: " + name + " not found!");
+			return;
+		}
+
+        if (s.source.isPlaying)
+        {
+			Stop("Theme");
+        }
+        else
+        {
+			Play("Theme");
+		}
+	}
 }

@@ -50,6 +50,7 @@ public class PlayerMovement : MonoBehaviour
     public float InAirControl;
 
     public float CurrentSpeed;
+    public Vector3 CurrentVel;
 
     public float Acceleration;
     public float Decceleration;
@@ -108,6 +109,9 @@ public class PlayerMovement : MonoBehaviour
     private Animator Anim;
 
     private Vector3 camFixedForward;
+    private Vector3 beforeWalJForward;
+    private Vector3 afterWalJForward;
+    private Vector3 forwardAxis;
 
     // Start is called before the first frame update
     void Start()
@@ -186,6 +190,8 @@ public class PlayerMovement : MonoBehaviour
 
             if (wallExists && AirborneTimer > 1f)
             {
+                Debug.ClearDeveloperConsole();
+                Debug.Log("Wall found");               
                 WallRun();
                 return;
             }
@@ -207,7 +213,7 @@ public class PlayerMovement : MonoBehaviour
                 BouncyJump();
             }
 
-            else if (checkRail && AirborneTimer > 0.2f)
+            else if (checkRail && AirborneTimer > 0.4f)
             {
                 OnRail();
             }
@@ -226,9 +232,14 @@ public class PlayerMovement : MonoBehaviour
             // check for jump
             if (player.GetButtonDown("Jump"))
             {
+                Debug.Log("Before Jump: " + HeadCam.transform.forward);
+                beforeWalJForward = HeadCam.transform.forward;
                 WallJump();
+                Debug.Log("After Jump: " +  HeadCam.transform.forward);
+                afterWalJForward = HeadCam.transform.forward;
                 //Vector3 camDir = HeadCam.transform.forward;
                 ResetObjectRotation();
+                //Debug.Log("After Obj Rotate: " + HeadCam.transform.forward);
                 //transform.r
                 return;
             }
@@ -273,6 +284,7 @@ public class PlayerMovement : MonoBehaviour
         float CamY = player.GetAxis("Camera Vertical");
 
         LookUpDown(CamY, Del);
+
 
         if (CurrentState == PlayerStates.grounded)
         {
@@ -394,6 +406,8 @@ public class PlayerMovement : MonoBehaviour
                 MovePlayerOnRail(Del);
             }
         }
+
+        CurrentVel = Rgbody.velocity;
     }
 
     private void JumpUp()
@@ -412,17 +426,40 @@ public class PlayerMovement : MonoBehaviour
 
     private void WallJump()
     {
-        Rgbody.velocity = Quaternion.FromToRotation(Rgbody.velocity, 
+
+        //Debug.Log("Before Rotate Velocity: " + Rgbody.velocity);
+        forwardAxis = transform.forward;
+        
+
+        if (Vector3.Dot(WallNormal, HeadCam.transform.forward) < 0)
+        {
+            HeadCam.transform.forward = Quaternion.AngleAxis(180, transform.forward) * HeadCam.transform.forward;
+        }
+
+        Vector3 tempVel = Quaternion.FromToRotation(Rgbody.velocity, 
             HeadCam.transform.forward) * Rgbody.velocity;
 
-        Vector3 jumpVelocity = Rgbody.velocity;
+        Vector3 jumpVelocity = tempVel;
         jumpVelocity.y = 0;
 
-        Rgbody.velocity = jumpVelocity;
+        tempVel = jumpVelocity;
 
-        Rgbody.AddForce(transform.up * (JumpForce*1.5f), ForceMode.Impulse);
+        //Debug.Log("After Rotate Velocity: " + tempVel);
 
-        //Debug.Log("Wall Jump!!!");
+        Rgbody.velocity = Vector3.zero;
+
+        Debug.Log("Begin Magnitude: " + tempVel.magnitude);
+
+        if (tempVel.magnitude < 10)
+        {
+            tempVel *=  10f / tempVel.magnitude;
+        }
+
+        Rgbody.AddForce(tempVel + transform.up * (JumpForce*1.5f) + WallNormal * (JumpForce*1.5f), 
+            ForceMode.Impulse);
+
+        //Debug.Log("End Velocity: " + tempVel);
+        Debug.Log("End Magnitude: " + tempVel.magnitude);
 
         tryingToGrab = true;
 
@@ -616,6 +653,11 @@ public class PlayerMovement : MonoBehaviour
         YTurn += (xValue * delta) * speed;
 
         transform.rotation = Quaternion.Euler(0, YTurn, 0);
+
+        //Testing
+        beforeWalJForward = Quaternion.Euler(0, (xValue * delta) * speed, 0) * beforeWalJForward;
+        afterWalJForward = Quaternion.Euler(0, (xValue * delta) * speed, 0) * afterWalJForward;
+        forwardAxis = Quaternion.Euler(0, (xValue * delta) * speed, 0) * forwardAxis;
     }
 
     private void TurnCamera(float xValue, float delta, float speed)
@@ -625,6 +667,11 @@ public class PlayerMovement : MonoBehaviour
         HeadCam.transform.rotation = Quaternion.Euler(0, YTurn, 0);
 
         //Debug.Log("TC Cam Right: " + HeadCam.transform.right);
+
+        //Testing
+        beforeWalJForward = Quaternion.Euler(0, (xValue * delta) * speed, 0) * beforeWalJForward;
+        afterWalJForward = Quaternion.Euler(0, (xValue * delta) * speed, 0) * afterWalJForward;
+        forwardAxis = Quaternion.Euler(0, (xValue * delta) * speed, 0) * forwardAxis;
     }
 
     private void LookUpDown(float yValue, float delta)
@@ -655,8 +702,9 @@ public class PlayerMovement : MonoBehaviour
         Vector3 levelForward = new Vector3(HeadCam.transform.forward.x, 0, HeadCam.transform.forward.z);
         transform.forward = Quaternion.FromToRotation(transform.forward, levelForward) * transform.forward;
         XTurn = 0;
+        //YTurn = 0;
         HeadCam.transform.localRotation = Quaternion.Euler(XTurn, 0, 0);
-        //Debug.Log("Reset Object Rotation");
+        Debug.Log("Reset Rotation: " + HeadCam.transform.forward);
     }
 
     private void ResetObjectVelocity()
@@ -728,6 +776,14 @@ public class PlayerMovement : MonoBehaviour
     {
         Gizmos.color = Color.blue;
         Gizmos.DrawLine(HeadCam.transform.position,
-            GetComponent<PlayerMovement>().HeadCam.transform.position + camFixedForward * 100);
+            HeadCam.transform.position + beforeWalJForward * 100);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(HeadCam.transform.position,
+            HeadCam.transform.position + afterWalJForward * 100);
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(HeadCam.transform.position,
+            HeadCam.transform.position + forwardAxis * 100);
     }
 }

@@ -132,8 +132,9 @@ MonoBehaviour:
   playerID: 0
   MaxSpeed: 16
   MovingBackSpeed: 10
-  InAirControl: 0.2
+  InAirControl: 0.1
   CurrentSpeed: 0
+  CurrentVel: {x: 0, y: 0, z: 0}
   Acceleration: 1
   Decceleration: 5
   DirectionalControl: 6

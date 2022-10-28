@@ -21,6 +21,9 @@ public class PhotoDecisionState : PhotoAnalysisState
         photoAnalysis.decisionStateHelper.decisionUI.SetActive(true);
         photoAnalysis.decisionStateHelper.symbolIndexOptions[photoAnalysis.decisionStateHelper.symbolIndex].SetActive(true);
 
+        //Active timer text
+        photoAnalysis.decisionStateHelper.timerText.gameObject.SetActive(true);
+
         // Set first symbol alpha to 0
         var tempColor = photoAnalysis.decisionStateHelper.symbolIndexOptions[photoAnalysis.decisionStateHelper.symbolIndex].GetComponent<RawImage>().color;
         tempColor.a = 0;
@@ -70,6 +73,8 @@ public class PhotoDecisionState : PhotoAnalysisState
         EventSystem.current.SetSelectedGameObject(null);
         /*EventSystem.current.SetSelectedGameObject(
             photoAnalysis.decisionStateHelper.buttonOptions[photoAnalysis.decisionStateHelper.buttonIndexOptions[photoAnalysis.decisionStateHelper.buttonIndex]]);*/
+        //Active timer text
+        photoAnalysis.decisionStateHelper.timerText.gameObject.SetActive(false);
 
         photoAnalysis.decisionStateHelper.player.controllers.maps.SetMapsEnabled(false, "PhotoDecision");
         photoAnalysis.decisionStateHelper.decisionUI.SetActive(false);
