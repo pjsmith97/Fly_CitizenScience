@@ -3,7 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using Rewired;
 
-
+/***************************************************************************************
+*    Title: PlayerMovement
+*    Author: Slug Glove
+*    Date: November 14th, 2020
+*    Edit: December, 2022
+*    Edit Author: Philip Smith
+*    Code version: 1.0
+*    Availability: https://www.youtube.com/watch?v=ZxWfkOhl6bQ&list=PLbT7sIsvd6RUPai-zx8wQ83QP8DG38Y9W&index=26
+*    Description: Manages the logic of the player character's movement. Relies on PlayerCollision to help with
+*                 logic.
+*
+***************************************************************************************/
 public class PlayerMovement : MonoBehaviour
 {
     public enum PlayerStates
@@ -14,6 +25,13 @@ public class PlayerMovement : MonoBehaviour
         onWall,
         ledgeGrab
     }
+
+    /***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: Ground states for player animation
+*
+***************************************************************************************/
 
     public enum GroundStates
     {
@@ -27,6 +45,12 @@ public class PlayerMovement : MonoBehaviour
         back
     }
 
+    /***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: Wall run states for player animation
+*
+***************************************************************************************/
     public enum WallRunStates
     {
         vertical,
@@ -92,6 +116,12 @@ public class PlayerMovement : MonoBehaviour
     private float PullUpTimer;
     private bool tryingToGrab = false;
 
+    /***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: Sets rail slide variables and animation boolean. Some testing code
+*
+***************************************************************************************/
     [Header("Rail Slide")]
     public Rail currentRail;
     public int currentRailSeg;
@@ -104,23 +134,52 @@ public class PlayerMovement : MonoBehaviour
     [Header("Testing")]
     public float LookUpTimer = 0;
 
+    /***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
+
     private PlayerCollision Collision;
     private Rigidbody Rgbody;
-    private Animator Anim;
+
+    /***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: Set up Animator object. Test code for wall jump logic
+*
+***************************************************************************************/
+    private Animator Anim; 
 
     private Vector3 camFixedForward;
     private Vector3 beforeWalJForward;
     private Vector3 afterWalJForward;
     private Vector3 forwardAxis;
 
+    /***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
+
     // Start is called before the first frame update
     void Start()
     {
         Collision = GetComponent<PlayerCollision>();
         Rgbody = GetComponent<Rigidbody>();
+
+        /***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: Set up Animator object.
+*
+***************************************************************************************/
         Anim = GetComponent<Animator>();
 
-        player = ReInput.players.GetPlayer(playerID);
+        player = ReInput.players.GetPlayer(playerID); //ReWired Set up
+
+/***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
 
         AgilityControl = 1;
 
@@ -137,8 +196,14 @@ public class PlayerMovement : MonoBehaviour
         float YMov = player.GetAxis("Vertical");
 
 
-        // Reset Rigibody components based on game state
-        if(CurrentState != PlayerStates.onWall)
+/***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: Reset Rigibody components based on game state. This is so players don't fall while wall running and fixes
+*                 weird bug that made camera turn while ledge grabbing.
+*
+***************************************************************************************/
+        if (CurrentState != PlayerStates.onWall)
         {
             Rgbody.useGravity = true;
         }
@@ -147,6 +212,10 @@ public class PlayerMovement : MonoBehaviour
         {
             Rgbody.freezeRotation = false;
         }
+/***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
 
         if (CurrentState == PlayerStates.grounded)
         {
@@ -166,7 +235,7 @@ public class PlayerMovement : MonoBehaviour
             Vector3 newLedge = Collision.CheckLedges();
             if (newLedge != Vector3.zero)
             {
-                OriginForward = transform.forward;
+                OriginForward = transform.forward; // EDIT: keeps track of forward when grabbing
                 LedgeGrab(newLedge);
                 //Debug.Log("Grab!");
             }
@@ -179,7 +248,7 @@ public class PlayerMovement : MonoBehaviour
                 Vector3 newLedge = Collision.CheckLedges();
                 if (newLedge != Vector3.zero)
                 {
-                    OriginForward = transform.forward;
+                    OriginForward = transform.forward; // EDIT: keeps track of forward when grabbing
                     LedgeGrab(newLedge);
                     //Debug.Log("Grab!");
                 }
@@ -190,7 +259,7 @@ public class PlayerMovement : MonoBehaviour
 
             if (wallExists && AirborneTimer > 1f)
             {
-                Debug.ClearDeveloperConsole();
+                //Debug.ClearDeveloperConsole();
                 Debug.Log("Wall found");               
                 WallRun();
                 return;
@@ -207,17 +276,35 @@ public class PlayerMovement : MonoBehaviour
             {
                 OnGround();
             }
-            
+
+/***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: Checks for bouncy layer. If true, initializes bouncy jump. 
+*    
+*                 Checks for rail after. If true, set player state to onRail.
+*                 
+*                 Both times need to check to make sure player has been in air for long enough time.
+*                 
+*
+***************************************************************************************/
             else if (checkBouncy && AirborneTimer > 0.2f)
             {
                 BouncyJump();
             }
+
 
             else if (checkRail && AirborneTimer > 0.4f)
             {
                 OnRail();
             }
         }
+
+/***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
+
         else if (CurrentState == PlayerStates.ledgeGrab)
         {
             // stop velocity 
@@ -225,9 +312,18 @@ public class PlayerMovement : MonoBehaviour
 
 
         }
+
         else if (CurrentState == PlayerStates.onWall)
         {
             //Debug.Log("Camera Update 1: " + HeadCam.transform.forward);
+
+/***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: New wall jump mechanic. Resets object rotation to fit the camera after exiting the wall
+*                 state.
+*
+***************************************************************************************/
 
             // check for jump
             if (player.GetButtonDown("Jump"))
@@ -252,10 +348,23 @@ public class PlayerMovement : MonoBehaviour
                 return;
             }
 
+/***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
+
             //Debug.Log("Forward 2: " + transform.forward);
 
             //Debug.Log("Camera Update 2: " + HeadCam.transform.forward);
         }
+
+/***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: Rail slide logic. When the player reaches the end of the rail or presses jump, 
+*                 initiate jump function and reset player object's rotation and velocity.
+*
+***************************************************************************************/
         else if (CurrentState == PlayerStates.onRail)
         {
             if (railCompleted || player.GetButtonDown("Jump"))
@@ -271,6 +380,11 @@ public class PlayerMovement : MonoBehaviour
                 return;
             }
         }
+
+/***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
     }
 
     private void FixedUpdate()
@@ -358,17 +472,29 @@ public class PlayerMovement : MonoBehaviour
                 // check for ground to land
                 bool checkGround = Collision.CheckFloor(-transform.up);
                 // Check for rails to slide on
-                bool checkRail = Collision.CheckRails(-transform.up, out currentRail, out currentRailSeg);
+                bool checkRail = Collision.CheckRails(-transform.up, out currentRail, out currentRailSeg); // EDIT: check on rail
 
                 if (checkGround)
                 {
                     OnGround();
                 }
 
+/***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: Check on Rail
+*
+***************************************************************************************/
+
                 else if (checkRail)
                 {
                     OnRail();
                 }
+
+/***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
             }
         }
         else if (CurrentState == PlayerStates.onWall)
@@ -376,7 +502,20 @@ public class PlayerMovement : MonoBehaviour
             // increment wall run timer
             //WallRunTimer += Del;
 
+
+/***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: Player now turns camera instead of the whole game object while on the wall
+*
+***************************************************************************************/
+
             TurnCamera(CamX, Del, TurnSpeedOnWalls);
+
+/***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
 
             // check for walls to run on
             bool wallExists = CheckWall(XMov, YMov);
@@ -395,6 +534,13 @@ public class PlayerMovement : MonoBehaviour
             camFixedForward = HeadCam.transform.forward;
         }
 
+
+/***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: Turn camera logic on rail. Interpolation of player movement on rail
+*
+***************************************************************************************/
         else if (CurrentState == PlayerStates.onRail)
         {
             TurnCamera(CamX, Del, TurnSpeed);
@@ -406,6 +552,11 @@ public class PlayerMovement : MonoBehaviour
                 MovePlayerOnRail(Del);
             }
         }
+
+/***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
 
         CurrentVel = Rgbody.velocity;
     }
@@ -424,18 +575,34 @@ public class PlayerMovement : MonoBehaviour
         InAir();
     }
 
+
+    /***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: New Function
+*
+***************************************************************************************/
+
+    /***************************************************************************************
+*    Title: WallJump
+*    
+*    Description: Alternate jump function when doing it from a wall. The direction of the jump is based on
+*                 the camera's direction and the normal vector of the wall.
+*
+***************************************************************************************/
     private void WallJump()
     {
 
         //Debug.Log("Before Rotate Velocity: " + Rgbody.velocity);
         forwardAxis = transform.forward;
         
-
+        // if camera is facing the wall, flip it 180 degrees to the mirror angle facing away from the wall
         if (Vector3.Dot(WallNormal, HeadCam.transform.forward) < 0)
         {
             HeadCam.transform.forward = Quaternion.AngleAxis(180, transform.forward) * HeadCam.transform.forward;
         }
 
+        // Set temp velocity variable to the direction of the camera multiplied to the curent velocity
         Vector3 tempVel = Quaternion.FromToRotation(Rgbody.velocity, 
             HeadCam.transform.forward) * Rgbody.velocity;
 
@@ -448,8 +615,10 @@ public class PlayerMovement : MonoBehaviour
 
         Rgbody.velocity = Vector3.zero;
 
+
         Debug.Log("Begin Magnitude: " + tempVel.magnitude);
 
+        // Multiply magnitude if too small. Fixes bug where wall jumps have too little force
         if (tempVel.magnitude < 10)
         {
             tempVel *=  10f / tempVel.magnitude;
@@ -466,6 +635,19 @@ public class PlayerMovement : MonoBehaviour
         InAir();
     }
 
+
+    /***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: New Function
+*
+***************************************************************************************/
+    /***************************************************************************************
+*    Title: BouncyJump
+*    
+*    Description: Alternate jump function when doing it from a bouncy surface. Multiplies JumpForce by 2
+*
+***************************************************************************************/
     private void BouncyJump()
     {
         Vector3 jumpVelocity = Rgbody.velocity;
@@ -479,6 +661,11 @@ public class PlayerMovement : MonoBehaviour
 
         InAir();
     }
+
+/***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
 
     private void LerpSpeed(float Magnitude, float delta, float targetSpd)
     {
@@ -523,12 +710,25 @@ public class PlayerMovement : MonoBehaviour
 
         Rgbody.velocity = LerpVel;
 
-        if(CurrentState == PlayerStates.grounded)
+        /***************************************************************************************
+        *   Edit Author: Philip Smith
+        *
+        *    Description: Check ground state for animation
+        *
+        ***************************************************************************************/
+
+        if (CurrentState == PlayerStates.grounded)
         {
+
+
             CheckGroundState(horizontal, vertical);
-            /*Debug.Log("Ground State: " + CurrentGroundState);
-            Debug.Log("Current Speed: " + CurrentSpeed);*/
+
         }
+
+/***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
 
         // Test magnitude of axis
         //Debug.Log("Horizontal: " + horizontal + ", Vertical: " + vertical);
@@ -540,6 +740,13 @@ public class PlayerMovement : MonoBehaviour
         Vector3 MoveDir = transform.up * vertivalMov;
         MoveDir = MoveDir * WallRunUpwardsMovement;
 
+        /***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: Move player based on where they're looking on wall
+*
+***************************************************************************************/
+
         if (Vector3.Dot(HeadCam.transform.forward, WallRight) >= 0)
         {
             MoveDir += WallRight * CurrentSpeed;
@@ -549,7 +756,10 @@ public class PlayerMovement : MonoBehaviour
             MoveDir += -WallRight * CurrentSpeed;
         }
 
-        
+        /***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
 
         Vector3 lerpAmount = Vector3.Lerp(Rgbody.velocity, MoveDir, WallRunAcceleration * del);
         Rgbody.velocity = lerpAmount;
@@ -557,10 +767,25 @@ public class PlayerMovement : MonoBehaviour
         //Debug.Log("WallRun :" + CurrentWallRunState);
     }
 
+
+    /***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: New Function
+*
+***************************************************************************************/
+    /***************************************************************************************
+    *    Title: MovePlayerOnRail
+    *    
+    *    Description: Interpolates the player over the rail segment objects. Interacts with the rail class.
+    *
+    ***************************************************************************************/
+
     private void MovePlayerOnRail(float del)
     {
-        railTransition += del * Mathf.Max(CurrentSpeed, 5f); // TODO test this with CurrentSpeed
+        railTransition += del * Mathf.Max(CurrentSpeed, 5f); // increment progress over rail
 
+        // if railTransition reaches over 1, move on to new segment
         if (railTransition > 1)
         {
             railTransition = 0;
@@ -580,6 +805,21 @@ public class PlayerMovement : MonoBehaviour
         railCompleted = currentRail.railCompleted;
     }
 
+
+    /***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: New Function
+*
+***************************************************************************************/
+    /***************************************************************************************
+*    Title: CheckGroundState
+*    
+*    Description: Checks what state the player character is in on the gorund for the sake of animation,
+*                 horizontal and vertical are the degrees of the controller analog sticks. They help determine
+*                 whether the player character is goign forward, back, or sideways.
+*
+***************************************************************************************/
     private void CheckGroundState(float horizontal, float vertical)
     {
 
@@ -648,18 +888,37 @@ public class PlayerMovement : MonoBehaviour
         
     }
 
+    /***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
+
     private void TurnPlayer(float xValue, float delta, float speed)
     {
         YTurn += (xValue * delta) * speed;
 
         transform.rotation = Quaternion.Euler(0, YTurn, 0);
 
-        //Testing
+        //EDIT Testing
         beforeWalJForward = Quaternion.Euler(0, (xValue * delta) * speed, 0) * beforeWalJForward;
         afterWalJForward = Quaternion.Euler(0, (xValue * delta) * speed, 0) * afterWalJForward;
         forwardAxis = Quaternion.Euler(0, (xValue * delta) * speed, 0) * forwardAxis;
     }
 
+
+    /***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: New Function
+*
+***************************************************************************************/
+    /***************************************************************************************
+*    Title: TurnCamera
+*    
+*    Description: For turning the camera independently of the player object. Used on rails and walls
+*                 so player animation remains the same.
+*
+***************************************************************************************/
     private void TurnCamera(float xValue, float delta, float speed)
     {
         YTurn += (xValue * delta) * speed;
@@ -673,6 +932,11 @@ public class PlayerMovement : MonoBehaviour
         afterWalJForward = Quaternion.Euler(0, (xValue * delta) * speed, 0) * afterWalJForward;
         forwardAxis = Quaternion.Euler(0, (xValue * delta) * speed, 0) * forwardAxis;
     }
+
+    /***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
 
     private void LookUpDown(float yValue, float delta)
     {
@@ -697,6 +961,19 @@ public class PlayerMovement : MonoBehaviour
         HeadCam.transform.forward = transform.forward;
     }
 
+
+    /***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: New Function
+*
+***************************************************************************************/
+    /***************************************************************************************
+*    Title: ResetObjectRotation
+*    
+*    Description: Sets the player's object rotation to fit the camera
+*
+***************************************************************************************/
     private void ResetObjectRotation()
     {
         Vector3 levelForward = new Vector3(HeadCam.transform.forward.x, 0, HeadCam.transform.forward.z);
@@ -707,11 +984,29 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log("Reset Rotation: " + HeadCam.transform.forward);
     }
 
+
+    /***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: New Function
+*
+***************************************************************************************/
+    /***************************************************************************************
+*    Title: ResetObjectVelocity
+*    
+*    Description: Velocity set to object forward direction with neutrality in the y axis.
+*
+***************************************************************************************/
     private void ResetObjectVelocity()
     {
         Vector3 levelForward = new Vector3(transform.forward.x, 0, transform.forward.z);
         Rgbody.velocity = Quaternion.FromToRotation(Rgbody.velocity, levelForward) * Rgbody.velocity;
     }
+
+    /***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
 
     private bool CheckWall(float xVal, float yVal)
     {
@@ -758,6 +1053,19 @@ public class PlayerMovement : MonoBehaviour
         PullUpTimer = 0;
     }
 
+
+    /***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: New Function
+*
+***************************************************************************************/
+    /***************************************************************************************
+*    Title: OnRail
+*    
+*    Description: Set player state on rail
+*
+***************************************************************************************/
     private void OnRail()
     {
         CurrentState = PlayerStates.onRail;
@@ -772,6 +1080,13 @@ public class PlayerMovement : MonoBehaviour
         Rgbody.useGravity = false;
     }
 
+
+
+    /***************************************************************************************
+*     
+*    Description: Draw gizmos in editor
+*
+***************************************************************************************/
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
@@ -786,4 +1101,9 @@ public class PlayerMovement : MonoBehaviour
         Gizmos.DrawLine(HeadCam.transform.position,
             HeadCam.transform.position + forwardAxis * 100);
     }
+
+    /***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
 }

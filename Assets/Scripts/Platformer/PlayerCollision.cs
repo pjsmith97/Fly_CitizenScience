@@ -2,13 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+/***************************************************************************************
+*    Title: PlayerCollision
+*    Author: Slug Glove
+*    Date: November 14th, 2020
+*    Edit: December, 2022
+*    Edit Author: Philip Smith
+*    Code version: 1.0
+*    Availability: https://www.youtube.com/watch?v=ZxWfkOhl6bQ&list=PLbT7sIsvd6RUPai-zx8wQ83QP8DG38Y9W&index=26
+*    Description: Manages the logic of the player character's proximity triggers. Helps PlayerMovement.
+*
+***************************************************************************************/
 public class PlayerCollision : MonoBehaviour
 {
 
     public float FloorCheckRadius; //radius of the detection for the floor
     public float RailCheckRadius; //radius of the detection for the floor
     public float bottomOffset; //bottom offset from player center
-    public float railBottomOffset; //bottom offset from player center
+    public float railBottomOffset; //EDIT: bottom offset from player center
     public float WallCheckRadius; //radius of the detection for the wall
     public float frontOffset; //front offset from the player center
     public float RoofCheckRadius; // the amount we check before standing up
@@ -21,8 +33,8 @@ public class PlayerCollision : MonoBehaviour
     public LayerMask FloorLayers; // layers to stand on
     public LayerMask WallLayers; // layers to wall run on
     public LayerMask LedgeGrabLayers; // layers to grab onto
-    public LayerMask BouncyLayers; // layers to bounce on
-    public LayerMask RailLayers; // layers to slide on rail
+    public LayerMask BouncyLayers; // EDIT: layers to bounce on
+    public LayerMask RailLayers; // EDIT: layers to slide on rail
 
     //private float rayUpOffset = 0.2f; //Offset of ray to determine wall normal
 
@@ -113,6 +125,13 @@ public class PlayerCollision : MonoBehaviour
         Collider[] ColHit = Physics.OverlapSphere(pos, WallCheckRadius, WallLayers); // check for walls
         if (ColHit.Length > 0)
         {
+/***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: Sends ray out to the collided Wall. Retrieves info about wall's normal. Determines based on camera
+*                 direction the direction the player runs towards.
+*
+***************************************************************************************/
             // Find closest point on the wall the player is near
             Vector3 collisionPt = ColHit[0].ClosestPoint(transform.position);
 
@@ -177,6 +196,11 @@ public class PlayerCollision : MonoBehaviour
             collisionCamForward = GetComponent<PlayerMovement>().HeadCam.transform.forward;
             //Debug.Log("Collsion Cam Forward: " + collisionCamForward);
 
+/***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
+
             // there is a wall in front of player
             return true;
         }
@@ -194,14 +218,32 @@ public class PlayerCollision : MonoBehaviour
             return Hit.point;
         }
 
+/***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: Second ledge ray to accomodate for when the farther edge ray misses the ledge
+*
+***************************************************************************************/
+
         RayPos = transform.position + (transform.forward * ForwardLedgeCheckPos * 0.725f) + (transform.up * UpwardLedgeCheckPos);
         if (Physics.Raycast(RayPos, -transform.up, out Hit, LedgeCheckDistance, LedgeGrabLayers))
         {
             return Hit.point;
         }
 
+/***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
+
         return Vector3.zero;
     }
+
+    /***************************************************************************************
+*
+*    Description: Draws Gizmos on selected in editor mode
+*
+***************************************************************************************/
 
     private void OnDrawGizmosSelected()
     {

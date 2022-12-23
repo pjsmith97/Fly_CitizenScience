@@ -5,43 +5,53 @@ using UnityEngine.SceneManagement;
 using Rewired;
 using TMPro;
 
+/***************************************************************************************
+*    Title: TutorialPanelManager
+*    Author: Philip Smith
+*    Date: December, 2022
+*    Edit Author: Philip Smith
+*    Code version: 1.0
+*    Description: Class that governs the panels in Classification Tutorial slideshow
+*
+***************************************************************************************/
 public class TutorialPanelManager : MonoBehaviour
 {
+    // Type indicating what diagrams are on screen
     public enum Diagrams
     {
-        edit,
-        flyBody,
-        flyCloseUp,
-        none
+        edit, //edit state diagrams
+        flyBody, // fly body photos
+        flyCloseUp, // fly close ups
+        none // no diagrams
     }
 
-    public Diagrams activeDiagram;
+    public Diagrams activeDiagram; //Active diagram on screen
 
-    public Player player;
-    [SerializeField] private int playerID = 0;
+    public Player player; //ReWire player object
+    [SerializeField] private int playerID = 0; //Rewire playerID
 
     [Header("Panels")]
-    [SerializeField] GameObject textPanel;
-    [SerializeField] GameObject diagramPanel;
-    [SerializeField] GameObject labels;
+    [SerializeField] GameObject textPanel; // Text panel
+    [SerializeField] GameObject diagramPanel; //Diagram panel
+    [SerializeField] GameObject labels; // Diagram labels
 
     [Header("Specific Objects")]
-    public List<GameObject> instructions;
-    public List<GameObject> inputPrompts;
-    public List<GameObject> exampleScreenshots;
-    public List<GameObject> flyBodyPhotos;
-    public List<GameObject> flyCloseUpPhotos;
-    public List<GameObject> editLabels;
-    public List<GameObject> photoLabels;
+    public List<GameObject> instructions; //instruction text objects
+    public List<GameObject> inputPrompts; // button input label prompts
+    public List<GameObject> exampleScreenshots; // Screenshot objects
+    public List<GameObject> flyBodyPhotos; // fly body photos
+    public List<GameObject> flyCloseUpPhotos; // fly close up photos
+    public List<GameObject> editLabels; // labels for edit diagram
+    public List<GameObject> photoLabels; //labels for photos
 
     private PhotoCheckTutorialUIState currentUIState;
 
     [Header("UI Transition State")]
-    public bool uiTextTransition;
-    public bool uiImageTransition;
-    public float fadeInSpeed;
-    public int instructionIndex;
-    public bool endTutorial;
+    public bool uiTextTransition; // is the text UI in mid transition
+    public bool uiImageTransition; // is the image UI in mid transition
+    public float fadeInSpeed; // speed that UI fades in
+    public int instructionIndex; // instruction panel index
+    public bool endTutorial; // end classification slide show
 
     // Start is called before the first frame update
     void Start()
@@ -88,9 +98,9 @@ public class TutorialPanelManager : MonoBehaviour
             photoLabels.Add(labels.transform.GetChild(1).GetChild(i).gameObject);
         }
 
-        player = ReInput.players.GetPlayer(playerID);
+        player = ReInput.players.GetPlayer(playerID); // Set up ReWired player
 
-        activeDiagram = Diagrams.edit;
+        activeDiagram = Diagrams.edit; // edit diagram set
 
         instructionIndex = 0;
 
@@ -98,12 +108,13 @@ public class TutorialPanelManager : MonoBehaviour
 
         uiImageTransition = true;
         
+        // Set up diagrams and text objects
         StartDiagramState();
         UpdateInputPrompts();
 
         ChangeUIState(new TutorialTransitionState());
 
-        player.controllers.maps.SetMapsEnabled(true, "Tutorial");
+        player.controllers.maps.SetMapsEnabled(true, "Tutorial"); // Set up ReWired controller map
     }
 
     // Update is called once per frame
@@ -149,6 +160,12 @@ public class TutorialPanelManager : MonoBehaviour
         currentUIState.FixedUpdate();
     }
 
+    /***************************************************************************************
+*    Title: ExitDiagram State
+*    
+*    Description: Sets all objects in current diagram to inactive
+*
+***************************************************************************************/
     public void ExitDiagramState()
     {
         List<GameObject> exitList = GetActiveDiagram();
@@ -160,8 +177,15 @@ public class TutorialPanelManager : MonoBehaviour
         }
     }
 
+/***************************************************************************************
+*    Title: StartDiagramState
+*    
+*    Description: Sets the necessary diagram objects to active beased on what diagram state is active
+*
+***************************************************************************************/
     public void StartDiagramState()
     {
+        // All diagram states except for edit set all objects in their diagram lists to active
         if(activeDiagram != Diagrams.edit)
         {
             foreach (GameObject obj in GetActiveDiagram())
@@ -169,6 +193,8 @@ public class TutorialPanelManager : MonoBehaviour
                 obj.SetActive(true);
             }
         }
+
+        // If in edit state, set specific objects in diagram list to active
         else
         {
             if(instructionIndex == 0)
@@ -188,10 +214,17 @@ public class TutorialPanelManager : MonoBehaviour
         }
     }
 
+    /***************************************************************************************
+*    Title: ExitLabelState
+*    
+*    Description: Sets labels that are no longer necessary to inactive. prevIndex is the previous instruction index
+*
+***************************************************************************************/
     public void ExitLabelState(int prevIndex)
     {
         if(prevIndex == 1)
         {
+            // set edit labels to inactive
             foreach (GameObject obj in editLabels)
             {
                 obj.SetActive(false);
@@ -200,6 +233,7 @@ public class TutorialPanelManager : MonoBehaviour
 
         else if(prevIndex == 3 && instructionIndex < 3)
         {
+            // set photo labels to inactive
             foreach (GameObject obj in photoLabels)
             {
                 obj.SetActive(false);
@@ -207,10 +241,17 @@ public class TutorialPanelManager : MonoBehaviour
         }
     }
 
+    /***************************************************************************************
+*    Title: StartLabelState
+*    
+*    Description: Sets labels to active based on the inctruction index
+*
+***************************************************************************************/
     public void StartLabelState()
     {
         if (instructionIndex == 1)
         {
+            // set edit labels to active
             foreach(GameObject obj in editLabels)
             {
                 obj.SetActive(true);
@@ -219,6 +260,7 @@ public class TutorialPanelManager : MonoBehaviour
 
         else if(instructionIndex >= 3)
         {
+            // set photo labels to active
             foreach (GameObject obj in photoLabels)
             {
                 obj.SetActive(true);
@@ -226,6 +268,12 @@ public class TutorialPanelManager : MonoBehaviour
         }
     }
 
+    /***************************************************************************************
+*    Title: GetActiveDiagram
+*    
+*    Description: Returns the game object list based on whatever diagram state is active
+*
+***************************************************************************************/
     public List<GameObject> GetActiveDiagram()
     {
         if (activeDiagram == Diagrams.edit)
@@ -245,25 +293,40 @@ public class TutorialPanelManager : MonoBehaviour
 
         else
         {
+            // If no diagram state is active, return an empty list
             return new List<GameObject>();
         }
     }
 
+    /***************************************************************************************
+*    Title: ChangeInstructionPanel
+*    
+*    Description: Iterates through each instruction panel text. Sets previous instruction panel at prevIndex to inactive.
+*                 Makes calls to update input prompts, labels, and diagrams. Sets UI state to the transition state.
+*
+***************************************************************************************/
     private void ChangeInstructionPanel(int prevIndex)
     {
         instructions[prevIndex].SetActive(false);
-        instructions[instructionIndex].SetActive(true);
+        instructions[instructionIndex].SetActive(true); 
 
-        UpdateInputPrompts();
+        UpdateInputPrompts(); // Update input prompts 
 
         uiTextTransition = true;
-        ExitLabelState(prevIndex);
-        ChangeDiagram();
-        ChangeUIState(new TutorialTransitionState());
+        ExitLabelState(prevIndex); // Update labels
+        ChangeDiagram(); // Update diagrams
+        ChangeUIState(new TutorialTransitionState()); // Update UI state
     }
 
+    /***************************************************************************************
+*    Title: UpdateInputPrompts
+*    
+*    Description: Changes input prompts at the bottom of instructions panel.
+*
+***************************************************************************************/
     private void UpdateInputPrompts()
     {
+        // If at the starting panel, Back input is inactive
         if(instructionIndex == 0)
         {
             inputPrompts[1].SetActive(false);
@@ -271,13 +334,17 @@ public class TutorialPanelManager : MonoBehaviour
 
         else if(instructionIndex >= 1)
         {
-            inputPrompts[1].SetActive(true);
+            inputPrompts[1].SetActive(true); // Set Back button to Active
+
+            // If at the last instruction panel, replace Next with prompt to end tutorial
             if (instructionIndex == instructions.Count - 1)
             {
                 endTutorial = true;
                 inputPrompts[0].SetActive(false);
                 inputPrompts[2].SetActive(true);
             }
+
+            // If the player exits this panel state, replace end prompt back with Next
             else if (endTutorial)
             {
                 endTutorial = false;
@@ -287,6 +354,12 @@ public class TutorialPanelManager : MonoBehaviour
         }
     }
 
+    /***************************************************************************************
+*    Title: ChangeDiagram
+*    
+*    Description: Changes diagrams based on instruction index
+*
+***************************************************************************************/
     private void ChangeDiagram()
     {
         Diagrams oldDiagram = activeDiagram;
@@ -307,6 +380,7 @@ public class TutorialPanelManager : MonoBehaviour
             newDiagram = Diagrams.flyCloseUp;
         }
 
+        // If the index is changing the diagram, start Ui image transition and exit diagram state to start new on
         if(oldDiagram != newDiagram)
         {
             uiImageTransition = true;
@@ -315,6 +389,7 @@ public class TutorialPanelManager : MonoBehaviour
             StartDiagramState();
         }
 
+        // If in edit diagram state, change diagrams
         else if(activeDiagram == Diagrams.edit)
         {
             uiImageTransition = true;
@@ -322,21 +397,33 @@ public class TutorialPanelManager : MonoBehaviour
             StartDiagramState();
         }
 
-        StartLabelState();
+        StartLabelState(); // Update labels
     }
 
+    /***************************************************************************************
+*    Title: ChangeUIState
+*    
+*    Description: Updates UI finite state machine 
+*
+***************************************************************************************/
     public void ChangeUIState(PhotoCheckTutorialUIState state)
     {
         //Debug.Log("Changing State!");
         if (currentUIState != null)
         {
             //Debug.Log("Exiting State!");
-            currentUIState.Exit();
+            currentUIState.Exit(); // Exit state
         }
         currentUIState = state;
-        currentUIState.Enter(this);
+        currentUIState.Enter(this); //Enter new state
     }
 
+    /***************************************************************************************
+*    Title: FinishTutorial
+*    
+*    Description: Initializes serialization to say that player has finished the full tutorial
+*
+***************************************************************************************/
     public void FinishTutorial()
     {
         GetComponent<TutorialSaveManager>().SaveData(true);

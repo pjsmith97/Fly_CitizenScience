@@ -2,6 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+/***************************************************************************************
+*    Title: HeadBobManager
+*    Author: Hero 3D
+*    Date: May 18th, 2021
+*    Edit: December, 2022
+*    Edit Author: Philip Smith
+*    Code version: 1.0
+*    Availability: https://youtube.com/watch?v=5MbR2qJK8Tc&si=EnSIkaIECMiOmarE
+*    Description: Class that bobs the player's camera to simulate the head bob when moving
+*
+***************************************************************************************/
 public class HeadBobManager : MonoBehaviour
 {
     [SerializeField] private bool enableBob;
@@ -14,7 +26,7 @@ public class HeadBobManager : MonoBehaviour
     private float toggleSpd = 3f;
     private Rigidbody rgbody;
     private Vector3 startPos;
-    private PlayerMovement playerMovement;
+    private PlayerMovement playerMovement;// EDIT: PlayerMovement object to keep track of player state
     
     // Start is called before the first frame update
     void Start()
@@ -69,7 +81,19 @@ public class HeadBobManager : MonoBehaviour
         float speed = new Vector3(rgbody.velocity.x, 0, rgbody.velocity.z).magnitude;
 
         if (speed < toggleSpd) return;
+
+/***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: Checks that player is on the ground before simulating head bob
+*
+***************************************************************************************/
         if (playerMovement.CurrentState != PlayerMovement.PlayerStates.grounded) return;
+
+/***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
 
         PlayMotion(StepMotion());
     }

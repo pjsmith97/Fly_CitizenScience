@@ -3,11 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-
+/***************************************************************************************
+*    Title: Rail
+*    Author: N3K EN
+*    Date: September 23rd, 2016
+*    Edit: December, 2022
+*    Edit Author: Philip Smith
+*    Code version: 1.0
+*    Availability: https://www.youtube.com/watch?v=URqjHIz6pts&list=PLbT7sIsvd6RUPai-zx8wQ83QP8DG38Y9W&index=28
+*    Description: Rail Class. Handles rail node transforms and finds positions on the rail 
+*
+***************************************************************************************/
 public class Rail : MonoBehaviour
 {
-    public Transform[] nodes;
-    public bool railCompleted;
+    public Transform[] nodes; // rail nodes. Invisible game objects that tell the player object where to go on the rail
+    public bool railCompleted; // is the rail completed
 
     private void Start()
     {
@@ -41,6 +51,13 @@ public class Rail : MonoBehaviour
     {
         Quaternion q1 = nodes[segment].rotation;
         Quaternion q2;
+
+        /***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: Check if player reaches the last node of the rail
+*
+***************************************************************************************/
         if (segment + 1 < nodes.Length)
         {
             q2 = nodes[segment + 1].rotation;
@@ -49,6 +66,11 @@ public class Rail : MonoBehaviour
         {
             q2 = q1;
         }
+
+/***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
 
         return Quaternion.Lerp(q1, q2, ratio);
     }

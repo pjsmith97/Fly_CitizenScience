@@ -3,9 +3,20 @@ using System;
 using UnityEngine;
 using Rewired;
 
+/***************************************************************************************
+*    Title: AudioManager
+*    Author: Brackeys
+*    Date: May 31, 2017 
+*    Edit: December, 2022
+*    Edit Author: Philip Smith
+*    Code version: 1.0
+*    Availability: https://youtube.com/watch?v=6OT43pvUyfY&si=EnSIkaIECMiOmarE
+*    Description: Manages 
+*
+***************************************************************************************/
 public class AudioManager : MonoBehaviour
 {
-	public Player player;
+	public Player player; // ReWired Player object
 	[SerializeField] private int playerID = 0;
 
 	public static AudioManager instance;
@@ -65,6 +76,18 @@ public class AudioManager : MonoBehaviour
 		s.source.Play();
 	}
 
+	/***************************************************************************************
+*    Title: Stop
+*    Original Title: StopPlaying
+*    Author: Nightcore Motion
+*    Date: May 31, 2017 
+*    Edit: December, 2022
+*    Edit Author: Philip Smith
+*    Code version: 1.0
+*    Availability: https://youtube.com/watch?v=6OT43pvUyfY&si=EnSIkaIECMiOmarE
+*    Description: Stops playing the sound specified
+*
+***************************************************************************************/
 	public void Stop(string sound)
 	{
 		Sound s = Array.Find(sounds, item => item.name == sound);
@@ -80,6 +103,19 @@ public class AudioManager : MonoBehaviour
 		s.source.Stop();
 	}
 
+	/***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: New Function
+*
+***************************************************************************************/
+
+	/***************************************************************************************
+*    Title: ToggleMusic
+*    
+*    Description: Toggles the audio file "Theme" on and off
+*
+***************************************************************************************/
 	private void ToggleMusic()
     {
 		Sound s = Array.Find(sounds, item => item.name == "Theme");
@@ -98,4 +134,9 @@ public class AudioManager : MonoBehaviour
 			Play("Theme");
 		}
 	}
+
+/***************************************************************************************
+*   Edit end
+*
+***************************************************************************************/
 }
