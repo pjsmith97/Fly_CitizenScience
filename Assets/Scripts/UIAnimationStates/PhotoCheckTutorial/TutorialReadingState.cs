@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class TutorialReadingState : PhotoCheckTutorialUIState
 {
-    
+    // Player is reading.
 }
