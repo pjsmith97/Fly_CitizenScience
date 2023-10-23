@@ -41,19 +41,7 @@ public class Rail : MonoBehaviour
         else
         {
             p2 = p1;
-
-            /***************************************************************************************
-*   Edit Author: Philip Smith
-*
-*    Description: Check if player reaches the last node of the rail
-*
-***************************************************************************************/
             railCompleted = true;
-
-/***************************************************************************************
-*   Edit end
-*
-***************************************************************************************/
         }
 
         return Vector3.Lerp(p1, p2, ratio);
@@ -64,7 +52,12 @@ public class Rail : MonoBehaviour
         Quaternion q1 = nodes[segment].rotation;
         Quaternion q2;
 
-
+        /***************************************************************************************
+*   Edit Author: Philip Smith
+*
+*    Description: Check if player reaches the last node of the rail
+*
+***************************************************************************************/
         if (segment + 1 < nodes.Length)
         {
             q2 = nodes[segment + 1].rotation;
@@ -74,24 +67,16 @@ public class Rail : MonoBehaviour
             q2 = q1;
         }
 
-        return Quaternion.Lerp(q1, q2, ratio);
-    }
-
-    /***************************************************************************************
-*   Edit Author: Philip Smith
-*
-*	Description: Get forward direction of segment
+/***************************************************************************************
+*   Edit end
 *
 ***************************************************************************************/
+
+        return Quaternion.Lerp(q1, q2, ratio);
+    }
 
     public Vector3 SegmentForward(int seg)
     {
         return nodes[seg].forward; 
     }
-
-
-    /***************************************************************************************
-    *   Edit end
-    *
-    ***************************************************************************************/
 }

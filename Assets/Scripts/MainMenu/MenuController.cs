@@ -5,19 +5,17 @@ using Rewired;
 
 public class MenuController : MonoBehaviour
 {
-    public Player player; // Rewired player
+    public Player player;
     [SerializeField] private int playerID = 0;
 
-    public MenuState menuState; // finite state machine main menu state
+    public MenuState menuState;
 
-    // Menu state helpers
     public MainMenuStateHelper mainMenuHelper;
     public MenuTutorialStateHelper tutorialStateHelper;
     public MenuChooseStatsHelper statsHelper;
     public MenuLevelStatsHelper levelStatsHelper;
     public MenuChooseLevelHelper levelChooseHelper;
 
-    // Level save manager for loading serialized data
     public LevelSaveManager saveManager;
     
     // Start is called before the first frame update

@@ -58,11 +58,6 @@ public class PhotoManager : MonoBehaviour
         requestApiBody.player = new ExpandoObject();
         requestApiBody.player.accountCode = playerCode;
 
-/***************************************************************************************
-*   End
-*
-***************************************************************************************/
-
         analysisController = GetComponent<PhotoAnalysisController>(); // Set analysis controller
 
         var spiPollTask = GetSpiPollInfo(); // Retrieve MMOS classification tassk
